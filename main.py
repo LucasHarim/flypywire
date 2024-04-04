@@ -5,7 +5,7 @@ from jsbsimpy.fdm_pubsub import FDMPublisher
 
 
 ROOT_DIR = 'C:\\Users\\harim\\AppData\\Local\\JSBSim'
-IC_PATH = 'jsbsimpy\\basic_ic.xml'
+IC_PATH = 'examples\\basic_ic.xml'
 MODEL_NAME = 'A320'
 SIM_DT = 0.033
 
