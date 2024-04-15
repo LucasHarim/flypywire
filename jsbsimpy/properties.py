@@ -21,7 +21,7 @@ class Property(collections.namedtuple('Property', ['name', 'description'])):
 
 def get_outputs_from_fdm(fdm: jsbsim.FGFDMExec, properties: List[Union[Property, BoundedProperty]]) -> Dict[str, float]:
     
-    return {prop.valid_name: fdm[prop.name] for prop in properties}
+    return {prop.name: fdm[prop.name] for prop in properties}
 
 
 # position and attitude

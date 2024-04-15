@@ -87,7 +87,7 @@ class FDMPublisher:
                 self.topic,
                 json.dumps(add_timestamp(fdm_outputs)))
             
-        if self._is_valid_fdm_output(fdm_outputs[prp.altitude_sl_ft.valid_name]): 
+        if self._is_valid_fdm_output(fdm_outputs[prp.altitude_sl_ft.name]): 
             self.socket.send_string(_msg)
 
         else: 
