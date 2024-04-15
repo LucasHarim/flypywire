@@ -48,7 +48,7 @@ while True:
 
     fdm.run()
     fdm_outputs = prp.get_outputs_from_fdm(fdm, prp.DEFAULT_FDM_OUTPUTS)
-    pub.publish_fdm_outputs(fdm_outputs= {"step": step, **fdm_outputs}, realtime=True)
+    pub.publish_fdm_outputs(fdm_outputs = {"step": step, **fdm_outputs}, realtime=True)
 
     step += 1 
 
