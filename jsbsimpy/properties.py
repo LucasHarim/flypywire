@@ -30,6 +30,8 @@ altitude_sl_m = BoundedProperty('position/h-sl-m', 'altitude above mean sea leve
 altitude_agl_ft = BoundedProperty('position/h-agl-ft', 'altitude above ground level [ft]', 0, 85000)
 lat_geod_deg = BoundedProperty('position/lat-geod-deg', 'geocentric latitude [deg]', -90, 90)
 lng_geoc_deg = BoundedProperty('position/long-gc-deg', 'geodesic longitude [deg]', -180, 180)
+dist_from_start_lon_mt = Property('position/distance-from-start-lon-mt', 'distance travelled along the longitudinal axis from starting position [m]')
+dist_from_start_lat_mt = Property('position/distance-from-start-lat-mt', 'distance travelled along the latitudinal axis from starting position [m]')
 dist_travel_m = Property('position/distance-from-start-mag-mt', 'distance travelled from starting position [m]')
 
 pitch_rad = BoundedProperty('attitude/pitch-rad', 'pitch [rad]', -0.5 * math.pi, 0.5 * math.pi)
@@ -104,4 +106,9 @@ DEFAULT_FDM_OUTPUTS = [
     lng_geoc_deg,
     roll_rad,
     pitch_rad,
-    heading_deg]
+    heading_deg,
+    u_fps,
+    v_fps,
+    w_fps,
+    dist_from_start_lat_mt,
+    dist_from_start_lon_mt]
