@@ -1,4 +1,4 @@
-import properties as prp
+import jsbsimpy.properties as prp
 from dataclasses import dataclass
 
 
