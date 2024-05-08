@@ -11,7 +11,7 @@ if __name__ == '__main__':
         
     sub = FDMSubscriber(
         host = "tcp://127.0.0.1",
-        port = 5555,
+        port = 2000,
         topic = 'topic/jsbsim',
         debug=False)
     
@@ -32,9 +32,9 @@ if __name__ == '__main__':
         fdm_outputs = sub.rcv_fdm_outputs(output_dtype=dict)
         if fdm_outputs: 
             
-            time.append(fdm_outputs[prp.sim_time_s.valid_name])
-            pitch.append(fdm_outputs[prp.pitch_rad.valid_name])
-            roll.append(fdm_outputs[prp.roll_rad.valid_name])
+            time.append(fdm_outputs[prp.sim_time_s.name])
+            pitch.append(fdm_outputs[prp.pitch_rad.name])
+            roll.append(fdm_outputs[prp.roll_rad.name])
 
         if max(time) > 0.75 * params['max_time']: 
             params['max_time'] = 2*max(time)

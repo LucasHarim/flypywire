@@ -8,7 +8,7 @@
   <wbody unit="FT/SEC">    0.0  </wbody>
   <longitude unit="DEG">  6.5285498  </longitude> <!-- UoBath campus -->
   <latitude unit="DEG">   45.8345457  </latitude>
-  <phi unit="DEG">         0.0  </phi>
+  <phi unit="DEG">         10.0  </phi>
   <theta unit="DEG">       5.0  </theta>
   <psi unit="DEG">         0.0  </psi>
   <altitude unit="FT">     16000 </altitude>

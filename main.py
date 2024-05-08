@@ -3,6 +3,8 @@ import numpy as np
 from jsbsimpy import properties as prp
 from jsbsimpy.fdm_pubsub import FDMPublisher
 
+from pid import PIDController
+from jsbsimpy.outputs import JFViewerOutputs
 
 ROOT_DIR = '/home/lucas/jsbsim'
 IC_PATH = 'examples/basic_ic.xml'
@@ -33,21 +35,23 @@ fdm[prp.throttle_cmd.name] = 0.75
 
 catalog = fdm.query_property_catalog("propulsion")
 
+dist_u_m = 0
+aileron_control = PIDController(5, 0.0, 1.0, SIM_DT)
+pitch_control = PIDController(0.5, 0.1, 0.2, SIM_DT)
+
 while True:
     
     
     time = fdm[prp.sim_time_s.name]
+    roll = np.pi/24 * np.sin(time)
+    fdm[prp.aileron_cmd.name] = aileron_control.run_step(roll, fdm[prp.roll_rad.name])
+    # fdm[prp.elevator_cmd.name] = pitch_control.run_step(0.0, fdm[prp.pitch_rad.name])
     
-    print(fdm[prp.throttle.name])
+    # fdm[prp.elevator_cmd.name] = -0.08
 
-    fdm[prp.elevator_cmd.name] = -0.08
-    # if time > 20: 
-    #     fdm[prp.aileron_cmd.name] = 0.05
-    #     fdm[prp.rudder_cmd.name] = -0.08
-
-
+    
     fdm.run()
-    fdm_outputs = prp.get_outputs_from_fdm(fdm, prp.DEFAULT_FDM_OUTPUTS)
+    fdm_outputs = prp.get_outputs_from_fdm(fdm, JFViewerOutputs)
     pub.publish_fdm_outputs(fdm_outputs = {"step": step, **fdm_outputs}, realtime=True)
 
     step += 1 
