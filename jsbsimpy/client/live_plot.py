@@ -32,9 +32,9 @@ if __name__ == '__main__':
         fdm_outputs = sub.rcv_fdm_outputs(output_dtype=dict)
         if fdm_outputs: 
             
-            time.append(fdm_outputs[prp.sim_time_s.valid_name])
-            pitch.append(fdm_outputs[prp.pitch_rad.valid_name])
-            roll.append(fdm_outputs[prp.roll_rad.valid_name])
+            time.append(fdm_outputs[prp.sim_time_s.name])
+            pitch.append(fdm_outputs[prp.pitch_rad.name])
+            roll.append(fdm_outputs[prp.roll_rad.name])
 
         if max(time) > 0.75 * params['max_time']: 
             params['max_time'] = 2*max(time)
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         plt.xlim([max(max(time) - 10, 0), max(time) + 5])
         
         # plt.ylim([-np.pi/2, np.pi/2])
-        plt.plot(time, pitch, label = "Pitch [rad]")
+        # plt.plot(time, pitch, label = "Pitch [rad]")
         plt.plot(time, roll, label = "Roll [rad]")
         
         
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         plt.legend()
 
 
-    ani = FuncAnimation(plt.gcf(), get_fdm_output, interval = 10)    
+    ani = FuncAnimation(plt.gcf(), get_fdm_output, interval = 2)    
     
     # plt.tight_layout()
     

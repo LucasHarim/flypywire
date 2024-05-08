@@ -3,15 +3,15 @@
   <!--
     Basic set of initial conditions at 3000 ft with engines running.
   -->
-  <ubody unit="FT/SEC">  683.5  </ubody> <!-- approx. 750 km/h -->
+  <ubody unit="FT/SEC">  765.53  </ubody> <!-- approx. 750 km/h -->
   <vbody unit="FT/SEC">    0.0  </vbody>
   <wbody unit="FT/SEC">    0.0  </wbody>
-  <longitude unit="DEG">  -43.2132455  </longitude> <!-- UoBath campus -->
-  <latitude unit="DEG">   -22.9515595  </latitude>
+  <longitude unit="DEG">  -43.307581734405915  </longitude> <!-- Cristo Redentor -->
+  <latitude unit="DEG">   -22.81670687512403  </latitude>
   <phi unit="DEG">         0.0  </phi>
-  <theta unit="DEG">       5.0  </theta>
+  <theta unit="DEG">       2.0  </theta>
   <psi unit="DEG">         0.0  </psi>
-  <altitude unit="FT">     16000 </altitude>
+  <altitude unit="FT">     200 </altitude>
   <elevation unit="FT">    0.00000001  </elevation> <!-- bug in JSBSim makes 0 cause NaNs -->
   <running>               1 </running> <!-- starts all engines -->
 </initialize>
