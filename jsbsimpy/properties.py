@@ -36,6 +36,7 @@ dist_travel_m = Property('position/distance-from-start-mag-mt', 'distance travel
 
 pitch_rad = BoundedProperty('attitude/pitch-rad', 'pitch [rad]', -0.5 * math.pi, 0.5 * math.pi)
 roll_rad = BoundedProperty('attitude/roll-rad', 'roll [rad]', -math.pi, math.pi)
+yaw_rad = BoundedProperty('attitude/psi-rad', 'psi [rad]', -math.pi, math.pi)
 heading_deg = BoundedProperty('attitude/psi-deg', 'heading [deg]', 0, 360)
 
 sideslip_deg = BoundedProperty('aero/beta-deg', 'sideslip [deg]', -180, +180)

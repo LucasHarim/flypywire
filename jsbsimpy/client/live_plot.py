@@ -48,7 +48,7 @@ if __name__ == '__main__':
         plt.xlim([max(max(time) - 10, 0), max(time) + 5])
         
         # plt.ylim([-np.pi/2, np.pi/2])
-        plt.plot(time, pitch, label = "Pitch [rad]")
+        # plt.plot(time, pitch, label = "Pitch [rad]")
         plt.plot(time, roll, label = "Roll [rad]")
         
         
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         plt.legend()
 
 
-    ani = FuncAnimation(plt.gcf(), get_fdm_output, interval = 10)    
+    ani = FuncAnimation(plt.gcf(), get_fdm_output, interval = 2)    
     
     # plt.tight_layout()
     
