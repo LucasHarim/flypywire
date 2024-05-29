@@ -2,7 +2,7 @@ from jsbsimpy.fdm_pubsub import FDMSubscriber
 
 if __name__ == "__main__":
     
-    sub = FDMSubscriber(host = "tcp://127.0.0.1", port = 5555, topic = "", debug = True)
+    sub = FDMSubscriber(host = "tcp://127.0.0.1", port = 2000, topic = "", debug = True)
 
     while True:
 

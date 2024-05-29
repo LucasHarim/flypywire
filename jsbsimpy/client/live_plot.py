@@ -11,7 +11,7 @@ if __name__ == '__main__':
         
     sub = FDMSubscriber(
         host = "tcp://127.0.0.1",
-        port = 5555,
+        port = 2000,
         topic = 'topic/jsbsim',
         debug=False)
     
