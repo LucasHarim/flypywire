@@ -84,7 +84,9 @@ class FDMPublisher:
         else: 
             if self.debug: logging.warning(msg = f'A FDM output is NaN. Not publishing', extra = {'topic': self.topic})
         
-        if self.debug: logging.info(msg = f'Sending message:\n{_msg}', extra = {'topic': self.topic})
+        _msg_log = "".join([f'{name}: {value}\n' for name, value in list(fdm_outputs.items())])
+
+        if self.debug: logging.info(msg = f'Sending message:\n{_msg_log}', extra = {'topic': self.topic})
         if realtime: time.sleep(self.time_sleep_s)
 
     def close(self) -> None:
