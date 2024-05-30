@@ -29,15 +29,6 @@ def add_timestamp(d: dict) -> dict:
     return {'timestamp': time.time(), **d}
 
 
-DEFAULT_FDM_OUTPUTS = [
-    prp.sim_time_s,
-    prp.altitude_sl_ft,
-    prp.lat_geod_deg,
-    prp.lng_geoc_deg,
-    prp.roll_rad,
-    prp.pitch_rad,
-    prp.heading_deg]
-
 PropertyName = NewType('PropertyName', str)
 PropertyValue = NewType('PropertyValue', float)
 
@@ -62,7 +53,7 @@ class FDMPublisher:
         self.socket = self._context.socket(zmq.PUB)
         self.socket.bind(self.address)
         
-        self._selected_outputs = DEFAULT_FDM_OUTPUTS
+        self._selected_outputs = prp.DEFAULT_FDM_OUTPUTS
         
     
     def __str__(self) -> str:

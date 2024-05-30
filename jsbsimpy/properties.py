@@ -1,10 +1,11 @@
 import math
-from typing import List, Union, Dict
+from typing import List, Union, Dict, NewType
 import collections
 import jsbsim
 from jsbsimpy.formatting import make_valid_name
 
 FT_TO_M = 0.3048
+PropertyName = NewType("PropertyName", str)
 
 class BoundedProperty(collections.namedtuple('BoundedProperty', ['name', 'description', 'min', 'max'])):
     
@@ -12,14 +13,21 @@ class BoundedProperty(collections.namedtuple('BoundedProperty', ['name', 'descri
     def valid_name(self) -> str:
         return make_valid_name(self.name)
 
+    def __call__(self) -> PropertyName:
+        return self.name
+
 class Property(collections.namedtuple('Property', ['name', 'description'])):
     
     @property
     def valid_name(self) -> str:
         return make_valid_name(self.name)
 
+    def __call__(self) -> PropertyName:
+        return self.name
 
-def get_outputs_from_fdm(fdm: jsbsim.FGFDMExec, properties: List[Union[Property, BoundedProperty]]) -> Dict[str, float]:
+def get_outputs_from_fdm(
+    fdm: jsbsim.FGFDMExec,
+    properties: List[Union[Property, BoundedProperty]]) -> Dict[str, float]:
     
     return {prop.name: fdm[prop.name] for prop in properties}
 
