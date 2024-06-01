@@ -3,3 +3,4 @@ jsbsim
 matplotlib
 PyQt5
 pyzmq
+py-trees==0.8.3
