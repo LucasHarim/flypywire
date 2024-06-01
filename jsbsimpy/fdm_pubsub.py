@@ -54,6 +54,7 @@ class FDMPublisher:
         self.socket.bind(self.address)
         
         self._selected_outputs = prp.DEFAULT_FDM_OUTPUTS
+        self._step = 0
         
     
     def __str__(self) -> str:
@@ -74,12 +75,14 @@ class FDMPublisher:
         fdm_outputs: Dict[PropertyName, PropertyValue],
         realtime: bool = True) -> None:
         
+        fdm_outputs = {'step': self._step, **fdm_outputs}
         _msg = add_header_to_msg(
                 self.topic,
                 json.dumps(add_timestamp(fdm_outputs)))
             
         if self._is_valid_fdm_output(fdm_outputs[prp.altitude_sl_ft.name]): 
             self.socket.send_string(_msg)
+            self._step += 1
 
         else: 
             if self.debug: logging.warning(msg = f'A FDM output is NaN. Not publishing', extra = {'topic': self.topic})
