@@ -107,6 +107,26 @@ initial_r_radps = Property('ic/r-rad_sec', 'yaw rate [rad/s]')
 initial_roc_fpm = Property('ic/roc-fpm', 'initial rate of climb [ft/min]')
 initial_heading_deg = Property('ic/psi-true-deg', 'initial (true) heading [deg]')
 
+# Turbulence
+_turb_description = '''
+        0: ttNone (turbulence disabled)
+        1: ttStandard
+        2: ttCulp
+        3: ttMilspec (Dryden spectrum)
+        4: ttTustin (Dryden spectrum)
+    '''
+
+turbulence_type = Property('atmosphere/turb-type', f'Turbulence type selection. {_turb_description}')
+turb_milspec_windspeed_at_20ft_AGL_fps = Property('atmosphere/turbulence/milspec/windspeed_at_20ft_AGL-fps', 'Parameter for Milspec and Tustin turbulence types')
+turb_milspec_severity = Property('atmosphere/turbulence/milspec/severity', 'Parameter for Milspec and Tustin turbulence types')
+
+# Wind
+gust_down_fps = Property('atmosphere/gust-down-fps', 'Gust down [ft/s]')
+gust_east_fps = Property('atmosphere/gust-east-fps', 'Gust from East [ft/s]')
+gust_north_fps = Property('atmosphere/gust-north-fps', 'Gust from North [ft/s]')
+headwind_fps = Property('atmosphere/headwind-fps', 'Headwind [ft/s]')
+
+
 DEFAULT_FDM_OUTPUTS = [
     sim_time_s,
     altitude_sl_ft,
