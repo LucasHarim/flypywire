@@ -11,5 +11,5 @@
   <psi unit="DEG">         180.0  </psi>
   <altitude unit="FT">     10000 </altitude>
   <elevation unit="FT">    0.00000001  </elevation> <!-- bug in JSBSim makes 0 cause NaNs -->
-  <running>               1 </running> <!-- starts all engines -->
+  <running>               -1 </running> <!-- starts all engines -->
 </initialize>
