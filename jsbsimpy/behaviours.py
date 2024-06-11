@@ -4,6 +4,7 @@ from typing import Union, Callable, Optional
 import logging
 from jsbsim import FGFDMExec
 
+import jsbsimpy.properties as prp
 from jsbsimpy.properties import Property, BoundedProperty
 
 
@@ -160,3 +161,14 @@ class Trigger(BaseBehaviour):
 
         if self.on_terminate: self.on_terminate()
         print(f'[Terminating]: {self.name}')
+
+
+class StallTrigger(Trigger):
+
+    def __init__(self, name: str, fdm: FGFDMExec, on_init: Callable = None, on_terminate: Callable = None):
+        
+        self.fdm = fdm
+        super().__init__(name, success_condition = lambda: self.check_stall(), on_init=on_init, on_terminate=on_terminate)
+    
+    def check_stall(self) -> bool:
+        return self.fdm[prp.v_down_fps()] >= 0 and self.fdm[prp.pitch_rad()] <= 0

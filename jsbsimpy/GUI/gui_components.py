@@ -1,5 +1,9 @@
 import os
-from typing import List, Iterable, Union
+from collections import namedtuple
+import asyncio
+from numpy import round
+from jsbsim import FGFDMExec
+from typing import List, Iterable, Union, Type, Callable, Any
 from customtkinter import (
     CTkFrame,
     CTkLabel,
@@ -9,7 +13,7 @@ from customtkinter import (
     CTkComboBox)
 
 
-class CTkEntryType(CTkEntry):
+class CTkEntryTyped(CTkEntry):
 
     def __init__(self, master, valid_type: Union[float, int, str] = str, **kwargs):
     
@@ -18,11 +22,12 @@ class CTkEntryType(CTkEntry):
         self.valid_type = valid_type
         self.bind("<KeyRelease>", self.validate_type)
     
-    def validate_type(self, event=None):
+    def validate_type(self, event=None) -> None:
         
-        entry_value = self.get()
         if self.get():
             
+            entry_value = self.get()
+
             if self.valid_type == int:
                 
                 if not entry_value.isdigit():
@@ -38,9 +43,36 @@ class CTkEntryType(CTkEntry):
                     except ValueError:
                         # If the entry content is not a valid float, remove the last character
                         self.delete(len(entry_value)-1, 'end')
-            
+    
 
-class NavigationFrame(CTkFrame):
+    def get_value(self):
+
+        if self.valid_type == int: return int(self.get())
+
+        elif self.valid_type == float: return float(self.get())
+
+        else: return self.get()
+
+
+NameCTkComponent = namedtuple('NameCTkComponent', ['name', 'component'])
+
+class MyCTkFrame(CTkFrame):
+
+    def __init__(self, master, **kwargs):
+
+        super().__init__(master, **kwargs)
+        self._ctk_components: List[NameCTkComponent] = list()
+        
+        
+    def get_inputs_from_components(self) -> dict:
+        
+        _typed_entries = {obj.name: obj.component.get_value() for obj in self._ctk_components if isinstance(obj.component, CTkEntryTyped)}
+        _non_typed_entries = {obj.name: obj.component.get() for obj in self._ctk_components if not isinstance(obj.component, CTkEntryTyped)}
+        
+        return {**_non_typed_entries, **_typed_entries}
+        
+
+class NavigationFrame(MyCTkFrame):
 
     def __init__(self, master,**kwargs):
 
@@ -66,7 +98,7 @@ class NavigationFrame(CTkFrame):
         self.grid_rowconfigure(4, weight=1)
 
 
-class InitialConditionFrame(CTkFrame):
+class InitialConditionFrame(MyCTkFrame):
 
     def __init__(self, master, **kwargs):
 
@@ -85,11 +117,15 @@ class InitialConditionFrame(CTkFrame):
             compound = 'center' , font = CTkFont(size = 12))
         self.loc_label.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-        self.latitude_entry = CTkEntryType(self.loc_frame, valid_type=float ,placeholder_text = 'latitude')
+        self.latitude_entry = CTkEntryTyped(self.loc_frame, valid_type=float ,placeholder_text = 'latitude')
+        self.latitude_entry.insert(0, 0.0)
         self.latitude_entry.grid(row = 1, column = 0, padx = 5, pady = 5)
+        
 
-        self.longitude_entry = CTkEntryType(self.loc_frame, valid_type=float,placeholder_text = 'longitude')
+        self.longitude_entry = CTkEntryTyped(self.loc_frame, valid_type=float,placeholder_text = 'longitude')
+        self.longitude_entry.insert(0, 0.0)
         self.longitude_entry.grid(row = 2, column = 0, padx = 5, pady = 5)
+        
 
         self.altitude_frame = CTkFrame(self)
         self.altitude_frame.grid(row = next(_main_frame_rows), column = 0, padx = 5, pady = 5)
@@ -98,26 +134,29 @@ class InitialConditionFrame(CTkFrame):
             compound = 'center' , font = CTkFont(size = 12))
         self.alt_label.grid(row = 0, column = 0, padx = 10, pady = 10)
         
-        self.altitude_entry = CTkEntryType(self.altitude_frame, valid_type=float,placeholder_text = 'altitude')
+        self.altitude_entry = CTkEntryTyped(self.altitude_frame, valid_type=float,placeholder_text = 'altitude')
+        self.altitude_entry.insert(0, 5000.0)
         self.altitude_entry.grid(row = 1, column = 0, padx = 5, pady = 5)
-
-
+        
         _vel_frame_rows = iter(range(10))
 
         self.vel_frame = CTkFrame(self)
         self.vel_frame.grid(row = next(_main_frame_rows), column = 0, padx = 5, pady = 5)
         
-        self.loc_label = CTkLabel(self.vel_frame, text = "Velocity - Body frame [ft/s]",
+        self.vel_label = CTkLabel(self.vel_frame, text = "Velocity - Body frame [ft/s]",
             compound = 'center' , font = CTkFont(size = 12))
-        self.loc_label.grid(row = next(_vel_frame_rows), column = 0, padx = 10, pady = 10)
+        self.vel_label.grid(row = next(_vel_frame_rows), column = 0, padx = 10, pady = 10)
 
-        self.ubody_entry = CTkEntryType(self.vel_frame, valid_type=float,placeholder_text = 'ubody')
+        self.ubody_entry = CTkEntryTyped(self.vel_frame, valid_type=float,placeholder_text = 'ubody')
+        self.ubody_entry.insert(0, 100.0)
         self.ubody_entry.grid(row = next(_vel_frame_rows), column = 0, padx = 5, pady = 5)
 
-        self.vbody_entry = CTkEntryType(self.vel_frame, valid_type=float,placeholder_text = 'vbody')
+        self.vbody_entry = CTkEntryTyped(self.vel_frame, valid_type=float,placeholder_text = 'vbody')
+        self.vbody_entry.insert(0, 0.0)
         self.vbody_entry.grid(row = next(_vel_frame_rows), column = 0, padx = 5, pady = 5)
 
-        self.wbody_entry = CTkEntryType(self.vel_frame, valid_type=float,placeholder_text = 'wbody')
+        self.wbody_entry = CTkEntryTyped(self.vel_frame, valid_type=float,placeholder_text = 'wbody')
+        self.wbody_entry.insert(0, 0.0)
         self.wbody_entry.grid(row = next(_vel_frame_rows), column = 0, padx = 5, pady = 5)
 
         _attitude_frame_rows = iter(range(10))
@@ -130,26 +169,32 @@ class InitialConditionFrame(CTkFrame):
             compound = 'center' , font = CTkFont(size = 12))
         self.att_label.grid(row = next(_attitude_frame_rows), column = 0, padx = 10, pady = 10)
 
-        self.phi_entry = CTkEntryType(self.attitude_frame, valid_type=float, placeholder_text = 'phi')
+        self.phi_entry = CTkEntryTyped(self.attitude_frame, valid_type=float, placeholder_text = 'phi')
+        self.phi_entry.insert(0, 0.0)
         self.phi_entry.grid(row = next(_attitude_frame_rows), column = 0, padx = 5, pady = 5)
 
-        self.theta_entry = CTkEntryType(self.attitude_frame, valid_type=float,placeholder_text = 'theta')
+        self.theta_entry = CTkEntryTyped(self.attitude_frame, valid_type=float,placeholder_text = 'theta')
+        self.theta_entry.insert(0, 0.0)
         self.theta_entry.grid(row = next(_attitude_frame_rows), column = 0, padx = 5, pady = 5)
 
-        self.psi_entry = CTkEntryType(self.attitude_frame, valid_type = float,placeholder_text = 'psi')
+        self.psi_entry = CTkEntryTyped(self.attitude_frame, valid_type = float,placeholder_text = 'psi')
+        self.psi_entry.insert(0, 0.0)
         self.psi_entry.grid(row = next(_attitude_frame_rows), column = 0, padx = 5, pady = 5)
         
-    
-    def outputs(self) -> dict:
+        self._ctk_components += [
+            self.latitude_entry,
+            self.longitude_entry,
+            self.altitude_entry,
+            self.ubody_entry,
+            self.vbody_entry,
+            self.wbody_entry,
+            self.phi_entry,
+            self.theta_entry,
+            self.psi_entry]
         
-        _outputs = {
-            'Location': {
-                'latitude': self.latitude_entry.get(),
-                'longitude': self.longitude_entry.get()},
-        }
+        self._ctk_components = [NameCTkComponent(component._placeholder_text, component) for component in self._ctk_components]
 
-
-class AircraftFrame(CTkFrame):
+class AircraftFrame(MyCTkFrame):
 
     def __init__(self, master, jsbsim_root: str, **kwargs) -> None:
 
@@ -167,8 +212,7 @@ class AircraftFrame(CTkFrame):
         self.aircraft_selection = CTkComboBox(self, values = [aircraft for aircraft in self.available_aircrafts_in_root])
         self.aircraft_selection.grid(row = next(_frame_rows), column = 0, padx = 10, pady = 5)
 
-        # self.aircraft_selection_label = CTkLabel(self.aircraft_selection, text = '')
-        # self.aircraft_selection.grid(row = 0, column = 10, padx = 10, pady = 10)
+        self._ctk_components += [self.aircraft_selection]
     
     def _get_aircrafts_in_jsbsim_root(self) -> List[str]:
         
@@ -191,10 +235,12 @@ class AircraftFrame(CTkFrame):
     
     
     def outputs(self) -> dict:
+
+
         return {'aircraft_selected': self.aircraft_selection.get()}
     
 
-class SocketConfigFrame(CTkFrame):
+class SocketConfigFrame(MyCTkFrame):
 
     def __init__(self, master, **kwargs):
 
@@ -206,26 +252,84 @@ class SocketConfigFrame(CTkFrame):
         self.frame_label.grid(row = next(_frame_rows), column = 0, padx = 5, pady = 5)
         
         
-        self.host_entry = CTkEntryType(self, placeholder_text='host')
+        self.host_entry = CTkEntryTyped(self, placeholder_text='host')
+        self.host_entry.insert(0, 'tcp://127.0.0.1')
         self.host_entry.grid(row = next(_frame_rows), column = 0, padx = 5, pady = 5)
         self.host_entry.bind("<KeyRelease>", self.display_address)
 
-        self.port_entry = CTkEntryType(self, valid_type=int,placeholder_text='port')
+        self.port_entry = CTkEntryTyped(self, valid_type=int,placeholder_text='port')
+        self.port_entry.insert(0, 5555)
         self.port_entry.grid(row = next(_frame_rows), column = 0, padx = 5, pady = 5)
         self.port_entry.bind("<KeyRelease>", self.display_address)
 
-        self.address_label = CTkLabel(self, text = '', font = CTkFont(size = 12), compound='left')
+        self.address_label = CTkLabel(self, text = 'host:port', font = CTkFont(size = 12), compound='left')
         self.address_label.grid(row = next(_frame_rows), column = 0, padx = 5, pady = 5)
         
+        self._ctk_components += [NameCTkComponent(component._placeholder_text, component)\
+                for component in [self.host_entry, self.port_entry]]
+            
     def display_address(self, event = None) -> None:
         
         self.address_label.configure(text = f'Address: {self.host_entry.get()}:{self.port_entry.get()}')
     
+
+class StartButton(CTkButton):
+
+    def __init__(self, master, fdm_exec: FGFDMExec, text: str = "Start", **kwargs):
+
+        super().__init__(master,text = text, **kwargs)
+        
+        self.fdm_exec = fdm_exec
+        
+        
+        
+        # self.button = CTkButton(self, text = text)
+        # self.button.grid()
+        # self.button.configure(command = lambda: self.start_tasks())    
+
+        self.sim_info_label = CTkLabel(self, text='', font = CTkFont(size = 12))
+        self.sim_info_label.grid(row = 1, column = 0, padx = 5, pady = 5)
+        
+        self.loop = asyncio.get_event_loop()
+        self.tasks = [
+            self.loop.create_task(self.run_fdm_loop(self.fdm_exec)),
+        ]
+
     
+    async def run_fdm_loop(self, fdm: FGFDMExec) -> None:
+        
+        self.fdm_exec.run_ic()
+
+        while True: 
+
+            fdm.run()
+            print(round(self.fdm_exec['simulation/sim-time-sec'], 3))
+            
+            await asyncio.sleep(0.5)
+    
+    
+    async def update_label(self) -> None:
+        self.sim_info_label.configure(
+            text = ''.join(['Simulation time: ',str(round(self.fdm_exec['simulation/sim-time-sec'], 3)), ' seconds']))
+    
+    def start_tasks(self) -> None:
+
+        self.loop.run_until_complete(asyncio.wait(self.tasks))
+        self.loop.close()
+
         
 
-class MainFrame(CTkFrame):
+        
+
+class MainFrame(MyCTkFrame):
 
     def __init__(self, master, **kwargs):
 
         super().__init__(master, **kwargs)
+
+if __name__ == '__main__':
+
+
+    s = SocketConfigFrame(None)
+    
+    

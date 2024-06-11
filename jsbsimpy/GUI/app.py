@@ -1,20 +1,29 @@
+import os
 import customtkinter
+from customtkinter import CTkButton
 from typing import Tuple
+from jsbsim import FGFDMExec
 
 from jsbsimpy.GUI.gui_components import (
 	NavigationFrame,
 	InitialConditionFrame,
 	AircraftFrame,
-	SocketConfigFrame)
+	SocketConfigFrame,
+	StartButton)
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
 
 class App(customtkinter.CTk):
 
 	def __init__(self, title: str, dimensions: Tuple[int, int], jsbsim_root: str):
 
 		self.jsbsim_root = jsbsim_root
+		self.fdm_exec = FGFDMExec(root_dir = self.jsbsim_root)
+		self.fdm_exec.load_model('a320')
+		IC_PATH = 'examples\\beechcraft_t6_cruise_lensois.xml'
+		self.fdm_exec.load_ic(IC_PATH, False)
 
 		super().__init__()
         
@@ -23,9 +32,9 @@ class App(customtkinter.CTk):
 		self.resizable(width=False, height=False)
 		
 		# configure grid layout (4x4)
-		# self.grid_columnconfigure(1, weight=1)
-		# self.grid_columnconfigure((2, 3), weight=0)
-		# self.grid_rowconfigure((0, 1, 2), weight=1)
+		self.grid_columnconfigure(1, weight=1)
+		self.grid_columnconfigure((2, 3), weight=0)
+		self.grid_rowconfigure((0, 1, 2), weight=1)
 		
 		_frame_rows = iter(range(100))
 		_frame_columns = iter(range(100))
@@ -43,15 +52,19 @@ class App(customtkinter.CTk):
 		self.socket_config_frame = SocketConfigFrame(self)
 		self.socket_config_frame.grid(row = 0, column = next(_frame_columns), padx = 10, pady = 10)
 		
+		self.start_btn = StartButton(self, text = 'Start Simulation',  fdm_exec = self.fdm_exec)
+		self.start_btn.configure(command = lambda: print(self.ic_frame.get_inputs_from_components()))
+		
+		self.start_btn.grid(row = 0, column = next(_frame_columns), padx = 10, pady = 10)
 
 if __name__ == '__main__':
 	
-	_JSBSim_ROOT = 'C:\\Users\\harim\\AppData\\Local\\JSBSim'
+	
     
 	app = App(
 		title="Just Flying",
 		dimensions = (1100, 550),
-		jsbsim_root=_JSBSim_ROOT)
+		jsbsim_root = os.environ.get('JSBSIM_ROOT'))
 
 	app.mainloop()
 
