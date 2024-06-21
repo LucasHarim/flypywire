@@ -2,9 +2,13 @@ from jsbsimpy.fdm_pubsub import FDMSubscriber
 
 if __name__ == "__main__":
     
-    sub = FDMSubscriber(host = "tcp://127.0.0.1", port = 2000, topic = "", debug = True)
+    sub = FDMSubscriber(host = "tcp://127.0.0.1", port = 2000, topic = "")
+
+    sub.start_listening()
 
     while True:
-
-        fdm_msg = sub.rcv_fdm_outputs()
-        if fdm_msg != None: print(fdm_msg)
+        
+        if sub.is_data_available:
+            fdm_msg = sub.get_fdm_outputs()
+            print(fdm_msg)
+        
