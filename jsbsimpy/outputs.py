@@ -14,5 +14,4 @@ JFViewerOutputs = [
     prp.u_fps,
     prp.v_fps,
     prp.w_fps,
-    prp.dist_from_start_lat_mt,
-    prp.dist_from_start_lon_mt]
+    ]
