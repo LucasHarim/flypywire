@@ -1,6 +1,8 @@
 import zmq
 import json
+from collections import deque
 import jsbsim
+from threading import Thread
 from math import isnan
 from typing import List, Union, Dict, NewType
 import logging
@@ -8,6 +10,7 @@ import time
 
 from jsbsimpy import properties as prp
 from jsbsimpy.properties import Property, BoundedProperty
+
 
 LOGGING_FORMAT = '[%(asctime)s] [%(topic)s] %(message)s'
 logging.basicConfig(format = LOGGING_FORMAT, level=logging.INFO)
@@ -100,54 +103,81 @@ class FDMPublisher:
 
 class FDMSubscriber:
 
-    def __init__(self, host: str, port: int, topic: str, debug: bool = False):
+    def __init__(self, 
+        host: str = 'tcp://127.0.0.1',
+        port: int = 5555,
+        topic: str = 'topic/jsbsim',
+        debug: bool = False,
+        timeout_secs: float = 1):
 
         self.host = host
         self.port = port
         self.address = f'{self.host}:{self.port}'
         self.topic = topic
         self.debug = debug
+        self.timeout_secs = timeout_secs
 
         self._context = zmq.Context()
         self.socket = self._context.socket(zmq.SUB)
         self.socket.connect(self.address)
         self.socket.subscribe(self.topic)
-
+        
         self.__last_msg_time = -10
-    
+        
+        self._listener_thread = Thread(target = self._rcv_fdm_outputs, daemon=True)
+
+        self.buffer: deque[str] = deque(maxlen=10)
+
     def __str__(self) -> str:
 
         return f'FDMSubscriber(address: {self.address}, topic: {self.topic})'
     
+    @property
+    def _timeout(self) -> bool:
+        return time.time() - self.__last_msg_time > self.timeout_secs
+    
+    @property
+    def is_data_available(self) -> bool:
+        return len(self.buffer) > 0
+    
+    
     def _remove_topic_from_msg(self, msg: str) -> str:
         return msg.split(f"{self.topic}:")[-1]
     
+
     def _update_last_msg_time(self) -> None:
         self.__last_msg_time = time.time()
     
-    def rcv_fdm_outputs(self, timeout : int = 1, output_dtype: Union[str, dict] = str) -> Union[str, dict]:
-        
-        ##TODO: make it an event driven function! 
-        try: 
-            _raw_msg = self.socket.recv_string(zmq.NOBLOCK)
-            self._update_last_msg_time()
 
-            if self.debug: logging.info(msg = f'Receiving message:\n{_raw_msg}', extra = {'topic': self.topic})
+    def _rcv_fdm_outputs(self) -> None:
         
-            _msg = self._remove_topic_from_msg(_raw_msg)
+        while True:
+            try:
+                _raw_msg = self.socket.recv_string(zmq.NOBLOCK)
+                self._update_last_msg_time()
 
-            if output_dtype == dict: return json.loads(_msg)
-            else: return _msg
+                if self.debug: logging.info(msg = f'Receiving message:\n{_raw_msg}', extra = {'topic': self.topic})
             
-        except zmq.error.Again:
-            
-            if time.time() - self.__last_msg_time > timeout:
-                logging.info(msg = f'Waiting for connection...', extra = {'topic': self.topic})
-                time.sleep(0.5)
-            
-
+                _msg = self._remove_topic_from_msg(_raw_msg)
+                self.buffer.append(_msg)
         
-    
+            except zmq.error.Again:
+                if self._timeout:
+                    logging.info(msg = f'Waiting for connection...', extra = {'topic': self.topic})
+                    time.sleep(0.5)
+        
+        self.close()
+
+
+    def start_listening(self) -> None:        
+        self._listener_thread.start()
+
+
+    def get_fdm_outputs(self) -> dict:
+        return self.buffer.pop()
+        
+        
     def close(self) -> None:
         self.socket.close()
+        self._listener_thread.join()
         logging.info(msg = f'Closing {self}', extra = {'topic': self.topic})
