@@ -169,7 +169,7 @@ class FDMSubscriber:
         self.close()
 
 
-    def start_listening(self) -> None:        
+    def start_listening(self) -> None:
         self._listener_thread.start()
 
 
