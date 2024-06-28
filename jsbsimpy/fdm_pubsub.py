@@ -100,6 +100,7 @@ class FDMPublisher:
         self.socket.close()
         logging.info(msg = f'Closing {self}', extra = {'topic': self.topic})
 
+MsgType = NewType('MsgType', str | dict)
 
 class FDMSubscriber:
 
@@ -126,7 +127,7 @@ class FDMSubscriber:
         
         self._listener_thread = Thread(target = self._rcv_fdm_outputs, daemon=True)
 
-        self.buffer: deque[str] = deque(maxlen=10)
+        self.buffer: deque[MsgType] = deque(maxlen=10) #type: ignore
 
     def __str__(self) -> str:
 
@@ -173,7 +174,10 @@ class FDMSubscriber:
         self._listener_thread.start()
 
 
-    def get_fdm_outputs(self) -> dict:
+    def get_fdm_outputs(self, dtype: str | dict = dict) -> MsgType: # type: ignore
+        
+        if dtype == dict: return json.loads(self.buffer.pop())
+        
         return self.buffer.pop()
         
         
