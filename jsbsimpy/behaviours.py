@@ -1,12 +1,16 @@
 from py_trees.behaviour import Behaviour
 from py_trees.common import Status
+from py_trees.composites import Sequence
 from typing import Union, Callable, Optional
 import logging
+from numpy import round
 from jsbsim import FGFDMExec
 
 import jsbsimpy.properties as prp
 from jsbsimpy.properties import Property, BoundedProperty
+from jsbsimpy.control import PIDController
 
+INF = 10**9
 
 class BaseBehaviour(Behaviour):
 
@@ -51,7 +55,7 @@ class WithinSimulationTimeRange(BaseBehaviour):
     
     def __str__(self) -> str:
 
-        return f'[{self.name}] -> Timespan{self.t_init, self.t_end} | Duration({self.t_end - self.t_init}) '
+        return f'[{self.name}] -> Timespan{round(self.t_init, 3), round(self.t_end, 3)} | Duration({self.t_end - self.t_init}) '
     
     def _check_time_input(self) -> None:
         if self.t_init > self.t_end:
@@ -157,7 +161,7 @@ class Trigger(BaseBehaviour):
 
         return Status.RUNNING
     
-    def on_terminate(self) -> None:
+    def terminate(self) -> None:
 
         if self.on_terminate: self.on_terminate()
         print(f'[Terminating]: {self.name}')
@@ -172,3 +176,70 @@ class StallTrigger(Trigger):
     
     def check_stall(self) -> bool:
         return self.fdm[prp.v_down_fps()] >= 0 and self.fdm[prp.pitch_rad()] <= 0
+
+
+def Idle(fdm: FGFDMExec, timespan: float = INF) -> WithinSimulationTimeRange:
+
+    return WithinSimulationTimeRange(
+            f'Holding for {timespan} seconds',
+            lambda: None,
+            fdm,
+            timespan= timespan)
+
+class CmdDoublet(BaseBehaviour):
+
+    def __init__(self, name, fdm: FGFDMExec, fcs_target: Property | BoundedProperty,
+                amplitude_norm: float = 1, period: float = 1, on_init: callable = None, on_terminate: callable = None):
+
+        super().__init__(name)
+        self.fcs_target = fcs_target
+        self.fdm = fdm
+        self.amplitude = amplitude_norm
+        self.period = period
+        self.on_init = on_init
+        self.on_terminate = on_terminate
+
+        
+        self.positive_cmd = WithinSimulationTimeRange(
+            f'{name} - positive cmd',
+            fdm = fdm,
+            on_time_range_method=  lambda: self.fdm.set_property_value(self.fcs_target.name, self.amplitude),
+            timespan=self.period/2)
+        
+        self.negative_cmd = WithinSimulationTimeRange(
+            f'{name} - negative cmd',
+            fdm = fdm,
+            on_time_range_method = lambda: self.fdm.set_property_value(self.fcs_target.name, -self.amplitude),
+            timespan= self.period/2,
+            on_terminate= lambda: self.fdm.set_property_value(self.fcs_target.name, 0))
+        
+        self.cmd_seq = Sequence(self.name, [self.positive_cmd, self.negative_cmd])
+    
+
+    def initialise(self) -> None:
+        
+        if self.on_init: self.on_init()
+        print(f'[Initializing]: {self.name}')
+
+    def update(self) -> Status:
+        
+        
+        [item.update() for item in self.cmd_seq.tick()]
+        
+        if self.cmd_seq.children[-1].status == Status.SUCCESS: 
+            return Status.SUCCESS
+            
+        return Status.RUNNING
+    
+    
+    def terminate(self, new_status: Status) -> None:
+        
+        if self.on_terminate: self.on_terminate()
+        
+        print(f'[Terminating]: {self.name}')
+        
+
+        
+    
+
+

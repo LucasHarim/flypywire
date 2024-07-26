@@ -76,7 +76,7 @@ gear = BoundedProperty('gear/gear-pos-norm', 'landing gear position, normalised'
 
 # engines
 engine_running = Property('propulsion/engine/set-running', 'engine running (0/1 bool)')
-all_engine_running = Property('propulsion/set-running', 'set engine running (-1 for all engines)')
+all_engines_running = Property('propulsion/set-running', 'set engine running (-1 for all engines)')
 engine_thrust_lbs = Property('propulsion/engine/thrust-lbs', 'engine thrust [lb]')
 
 # controls command
@@ -98,9 +98,15 @@ initial_altitude_ft = Property('ic/h-sl-ft', 'initial altitude MSL [ft]')
 initial_terrain_altitude_ft = Property('ic/terrain-elevation-ft', 'initial terrain alt [ft]')
 initial_longitude_geoc_deg = Property('ic/long-gc-deg', 'initial geocentric longitude [deg]')
 initial_latitude_geod_deg = Property('ic/lat-geod-deg', 'initial geodesic latitude [deg]')
+
 initial_u_fps = Property('ic/u-fps', 'body frame x-axis velocity; positive forward [ft/s]')
 initial_v_fps = Property('ic/v-fps', 'body frame y-axis velocity; positive right [ft/s]')
 initial_w_fps = Property('ic/w-fps', 'body frame z-axis velocity; positive down [ft/s]')
+
+initial_phi_deg = Property('ic/phi-deg', 'Initial roll angle [deg]')
+initial_theta_deg = Property('ic/theta-deg', 'Initial pitch angle [deg]')
+initial_psi_deg = Property('ic/psi-deg', 'Initial yaw angle [deg]')
+
 initial_p_radps = Property('ic/p-rad_sec', 'roll rate [rad/s]')
 initial_q_radps = Property('ic/q-rad_sec', 'pitch rate [rad/s]')
 initial_r_radps = Property('ic/r-rad_sec', 'yaw rate [rad/s]')
