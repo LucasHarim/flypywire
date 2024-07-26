@@ -176,9 +176,13 @@ class FDMSubscriber:
 
     def get_fdm_outputs(self, dtype: str | dict = dict) -> MsgType: # type: ignore
         
-        if dtype == dict: return json.loads(self.buffer.pop())
+        try:    
+            if dtype == dict: return json.loads(self.buffer.pop())
+            return self.buffer.pop()
         
-        return self.buffer.pop()
+        except IndexError as e:            
+            
+            print('Trying to pop() from empty deque. Are you calling get_fdm_outputs() twice?')
         
         
     def close(self) -> None:
