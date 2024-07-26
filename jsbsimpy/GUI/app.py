@@ -11,8 +11,8 @@ from jsbsimpy.GUI.gui_components import (
 	SocketConfigFrame,
 	StartButton)
 
-customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
+customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
 class App(customtkinter.CTk):
@@ -21,8 +21,8 @@ class App(customtkinter.CTk):
 
 		self.jsbsim_root = jsbsim_root
 		self.fdm_exec = FGFDMExec(root_dir = self.jsbsim_root)
-		self.fdm_exec.load_model('a320')
-		IC_PATH = 'examples\\beechcraft_t6_cruise_lensois.xml'
+		self.fdm_exec.load_model('A320')
+		IC_PATH = 'examples/beechcraft_t6_cruise_lensois.xml'
 		self.fdm_exec.load_ic(IC_PATH, False)
 
 		super().__init__()
