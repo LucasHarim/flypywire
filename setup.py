@@ -12,5 +12,6 @@ setup(name='jsbsimpy',
       'jsbsim',
       'matplotlib',
       'PyQt5',
-      'pyzmq']
+      'pyzmq',
+      'zmq-requests @ git+https://github.com/LucasHarim/zmq-requests@main']
      )

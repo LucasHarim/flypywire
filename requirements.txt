@@ -22,3 +22,4 @@ pyzmq==25.1.2
 six==1.16.0
 zipp==3.18.1
 rerun-sdk==0.16.1
+zmq-requests @ git+https://github.com/LucasHarim/zmq-requests@main
