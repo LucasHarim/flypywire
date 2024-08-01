@@ -1,3 +1,4 @@
+from __future__ import annotations
 import zmq
 import json
 from collections import deque
@@ -100,7 +101,7 @@ class FDMPublisher:
         self.socket.close()
         logging.info(msg = f'Closing {self}', extra = {'topic': self.topic})
 
-MsgType = NewType('MsgType', str | dict)
+MsgType = NewType('MsgType', Union[str, dict])
 
 class FDMSubscriber:
 
