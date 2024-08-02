@@ -4,11 +4,13 @@ from zmq_requests import service_request, Deserializers
 
 from jsbsimpy.unityapi.unityengine_classes import (
     Vector3,
+    Transform,
     Geolocation)
 
 
 Deserializers.add_deserializer(Vector3, lambda val_str: Vector3(**json.loads(val_str)))
 Deserializers.add_deserializer(Geolocation, lambda val_str: Geolocation(**json.loads(val_str)))
+Deserializers.add_deserializer(Transform, lambda val_str: Transform(Vector3(**json.loads(val_str)['position']), Vector3(**json.loads(val_str)['rotation'])))
 
 class GameServices:
 
@@ -16,11 +18,11 @@ class GameServices:
 
         self.socket = socket
     
-    @service_request
-    def list_assets(self) -> str: ...
+    # @service_request
+    # def list_assets(self, arg: str = "") -> str: ...
 
     @service_request
-    def spawn_asset(self, game_asset: str) -> None: ...
+    def spawn_asset(self, game_asset: str, rolename: str, transform: str, parent_id: str = "") -> None: ...
 
     @service_request
     def destroy_actor(self, actor_id: str) -> None: ...
@@ -28,6 +30,12 @@ class GameServices:
     @service_request
     def destroy_all_actors(self) -> None: ...
 
+    @service_request
+    def get_transform(self, actor_id: str) -> Transform: ...
+
+    @service_request
+    def set_transform(self, actor_id: str, transform: str) -> None: ...
+    
     @service_request
     def get_position(self, actor_id: str) -> Vector3: ...
 
@@ -41,4 +49,4 @@ class GameServices:
     def set_geolocation(self, actor_id, geolocation: str) -> None: ...
 
     @service_request
-    def freeze_actor(self, actor_id: str) -> None: ...
+    def freeze_actor(self, actor_id: str, clone_name: str) -> None: ...

@@ -1,6 +1,7 @@
 from jsbsimpy.unityapi.game_services import GameServices
 from jsbsimpy.unityapi.unityengine_classes import (
     Geolocation,
+    Transform,
     Vector3)
 
 class SimulationContext:
@@ -10,21 +11,28 @@ class SimulationContext:
         self.client = client
         self.cleanup_on_exit = cleanup_on_exit
         self.services = GameServices(self.client.socket)
-    
+        
+        self.actor_clone_count = dict()
 
     def __enter__(self): 
         return self
 
+    
+    '''
+        #TODO: Fixing problem with socket on exit.
+        - The service self.destroy_all_actors() fails on exit if other services 
+        are on going. It happens probably because the req-rep is not properly finished
+    '''
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         
         if self.cleanup_on_exit: self.destroy_all_actors()
 
 
-    def list_assets(self) -> str:
-        return self.services.list_assets()
+    # def list_assets(self) -> str:
+    #     return self.services.list_assets("")
     
-    def spawn_asset(self, game_asset: str) -> None:
-        return self.services.spawn_asset(game_asset)
+    def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
+        return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)
     
     def destroy_actor(self, actor_id: str) -> None:
         return self.services.destroy_actor(actor_id)
@@ -32,6 +40,12 @@ class SimulationContext:
     def destroy_all_actors(self) -> None:
         return self.services.destroy_all_actors()
 
+    def get_transform(self, actor_id: str) -> Transform:
+        return self.services.get_transform(actor_id)
+    
+    def set_transform(self, actor_id: str, transform: Transform) -> None:
+        return self.services.set_transform(actor_id, transform.dumps())
+    
     def get_position(self, actor_id) -> Vector3:
         return self.services.get_position(actor_id)
     
@@ -45,7 +59,13 @@ class SimulationContext:
         return self.services.set_geolocation(actor_id, geolocation.dumps())
     
     def freeze_actor(self, actor_id: str) -> None:
-        return self.services.freeze_actor(actor_id)
+
+        if actor_id in self.actor_clone_count:
+            self.actor_clone_count[actor_id] += 1
+        else: 
+            self.actor_clone_count[actor_id] = 1
+        
+        return self.services.freeze_actor(actor_id, f"{actor_id}.clone[{self.actor_clone_count.get(actor_id)}]")
     
 
     
