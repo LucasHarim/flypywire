@@ -5,7 +5,8 @@ from zmq_requests import service_request, Deserializers
 from jsbsimpy.unityapi.unityengine_classes import (
     Vector3,
     Transform,
-    Geolocation)
+    Geolocation,
+    Color)
 
 
 Deserializers.add_deserializer(Vector3, lambda val_str: Vector3(**json.loads(val_str)))
@@ -35,7 +36,7 @@ class GameServices:
 
     @service_request
     def set_transform(self, actor_id: str, transform: str) -> None: ...
-    
+
     @service_request
     def get_position(self, actor_id: str) -> Vector3: ...
 
@@ -50,3 +51,15 @@ class GameServices:
 
     @service_request
     def freeze_actor(self, actor_id: str, clone_name: str) -> None: ...
+
+    @service_request
+    def draw_actor_trail(self,
+        actor_id: str,
+        width: float,
+        start_color: Color,
+        end_color: Color,
+        label: str,
+        lifetime: float) -> None: ...
+
+    @service_request
+    def draw_axis(self, transform: str, parent_id: str, size: float, label: str) -> None: ...

@@ -6,7 +6,7 @@ import json
 from typing import List
 from zmq_requests import service_request
 from jsbsimpy.unityapi.context import SimulationContext
-from jsbsimpy.unityapi.unityengine_classes import Transform, Vector3
+from jsbsimpy.unityapi.unityengine_classes import Transform, Vector3, Color
 import time
 import numpy as np
 class Client:
@@ -49,33 +49,36 @@ if __name__ == '__main__':
 
     with client.SimulationContext() as ctx:
         
-        
+        ctx.destroy_all_actors()
         ctx.spawn_asset(
             game_asset="Aircrafts/Missile",
             rolename='Main-Missile',
             transform= Transform(Vector3(10, 10, 10), Vector3(0, 0, -90)))
         
-        # ctx.spawn_asset(
-        #     game_asset="Aircrafts/Missile",
-        #     rolename='Side-Missile',
-        #     transform= Transform(Vector3(5, 5, 5), Vector3(0, 0, 90)),
-        #     parent_id='Main-Missile')
+        ctx.spawn_asset(
+            game_asset="Aircrafts/Missile",
+            rolename='Side-Missile',
+            transform= Transform(Vector3(5, 5, 5), Vector3(0, 0, 90)),
+            parent_id='Main-Missile')
 
+        ctx.draw_actor_trail("Main-Missile", width = 0.1, start_color = Color(1, 1, 0), end_color=Color(0, 1, 0),lifetime = 10)
+        ctx.draw_axis(Transform(), "Main-Missile")
 
         while connected:
             
             pos = Vector3(u * t, 2*np.sin(t), 2*np.cos(t))
             rot = Vector3(30*np.sin(0.1*t), 30*np.cos(0.1*t), 45*np.sin(0.05*t))
 
-            ctx.set_transform('Main-Missile', Transform(rotation = rot))
+            ctx.set_transform('Main-Missile', Transform(pos,rot))
+            # ctx.set_position('Main-Missile', pos)
             
-            # if t%5 == 0: ctx.freeze_actor('Main-Missile')
+            if t%5 == 0: ctx.freeze_actor('Main-Missile')
 
             t += 1
 
             if t > 100: break
 
         
-        # time.sleep(100)
+        time.sleep(100)
 
         

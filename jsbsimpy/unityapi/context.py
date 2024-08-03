@@ -1,8 +1,10 @@
+import time
 from jsbsimpy.unityapi.game_services import GameServices
 from jsbsimpy.unityapi.unityengine_classes import (
     Geolocation,
     Transform,
-    Vector3)
+    Vector3,
+    Color)
 
 class SimulationContext:
 
@@ -67,5 +69,13 @@ class SimulationContext:
         
         return self.services.freeze_actor(actor_id, f"{actor_id}.clone[{self.actor_clone_count.get(actor_id)}]")
     
-
+    def draw_actor_trail(self, actor_id: str, width: float, start_color: Color = Color(1, 0, 0), end_color: Color = Color(0, 0, 1), lifetime: float = 10) -> None:
+        
+        label = f"{actor_id}.trajectory[{time.time_ns()}]"
+        
+        return self.services.draw_actor_trail(actor_id, width, start_color.dumps(), end_color.dumps(), label, lifetime)
     
+    def draw_axis(self, transform: Transform, parent_id: str = "", size: float = 10) -> None:
+        
+        label = f"{parent_id}.axis.{time.time_ns()}"
+        return self.services.draw_axis(transform.dumps(), parent_id, size, label)
