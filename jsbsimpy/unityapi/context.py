@@ -11,6 +11,7 @@ class SimulationContext:
     def __init__(self, client, cleanup_on_exit: bool = True):
 
         self.client = client
+        self.publisher = self.client.publisher
         self.cleanup_on_exit = cleanup_on_exit
         self.services = GameServices(self.client.socket)
         

@@ -15,9 +15,14 @@ class Client:
 
         self.host = host
         self.port = port
+        self.req_port = port + 1
+
         self.socket = zmq.Context().socket(zmq.REQ)
-        self.socket.connect(f'{host}:{port}')
+        self.socket.connect(f'{self.host}:{self.req_port}')
         self.socket.RCVTIMEO = timeout_ms
+
+        self.publisher = zmq.Context().socket(zmq.PUB)
+        self.publisher.bind(f'{self.host}:{self.port}')
 
         self._check_connection_with_server()
 
