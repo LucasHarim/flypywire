@@ -11,43 +11,24 @@ class BaseDataclass:
 @dataclass
 class Vector3(BaseDataclass):
 
-    x: float
-    y: float
-    z: float
-
-    def __init__(self, x = 0, y = 0, z = 0):
-        
-        self.x = x
-        self.y = y
-        self.z = z
-
+    x: float = 0
+    y: float = 0
+    z: float = 0
 
 @dataclass
 class Transform(BaseDataclass):
 
-    position: Vector3
-    rotation: Vector3
-
-    def __init__(self, position = Vector3(), rotation = Vector3()):
-
-        self.position = position
-        self.rotation = rotation
+    position: Vector3 = Vector3()
+    rotation: Vector3 = Vector3()
 
 
 @dataclass
 class Color(BaseDataclass):
 
-    r: float
-    g: float
-    b: float
-    a: float
-
-    def __init__(self, r = 1, g = 1, b = 1, a = 1):
-
-        self.r = r
-        self.g = g
-        self.b = b
-        self.a = a
+    r: float = 1
+    g: float = 1
+    b: float = 1
+    a: float = 1
 
 
 @dataclass

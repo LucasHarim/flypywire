@@ -16,6 +16,33 @@ from jsbsimpy.properties import Property, BoundedProperty
 LOGGING_FORMAT = '[%(asctime)s] [%(topic)s] %(message)s'
 logging.basicConfig(format = LOGGING_FORMAT, level=logging.INFO)
 
+'''
+    #TODO: 
+    Make a function to send the information according to the following pattern example:
+
+    {
+        "timestamp": 1231213.312,
+        "aircrafts": {
+            "a320-main": {
+                "latitude": -20.3102312312,
+                "longitude": 5.123123123123,
+                "altitude": 5012,
+                "rollDeg": 0.0,
+                "pitchDeg": 1.02,
+                "yawDeg": -5.12
+            },
+            "a320-second": {
+                "latitude": -20.3102312312,
+                "longitude": 5.123123123123,
+                "altitude": 5012,
+                "rollDeg": 0.0,
+                "pitchDeg": 1.02,
+                "yawDeg": -5.12
+            }
+        }
+    }
+
+'''
 
 def _is_topic_or_service_name_valid(topic: str) -> Union[None, bool]:
     
