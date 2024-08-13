@@ -34,7 +34,7 @@ def get_outputs_from_fdm(
 
 # position and attitude
 altitude_sl_ft = BoundedProperty('position/h-sl-ft', 'altitude above mean sea level [ft]', -1400, 85000)
-altitude_sl_m = BoundedProperty('position/h-sl-m', 'altitude above mean sea level [m]', -1400 * FT_TO_M, 85000 * FT_TO_M)
+altitude_sl_m = BoundedProperty('position/h-sl-meters', 'altitude above mean sea level [m]', -1400 * FT_TO_M, 85000 * FT_TO_M)
 altitude_agl_ft = BoundedProperty('position/h-agl-ft', 'altitude above ground level [ft]', 0, 85000)
 lat_geod_deg = BoundedProperty('position/lat-geod-deg', 'geocentric latitude [deg]', -90, 90)
 lng_geoc_deg = BoundedProperty('position/long-gc-deg', 'geodesic longitude [deg]', -180, 180)
