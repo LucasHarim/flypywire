@@ -31,8 +31,8 @@ class SimulationContext:
         if self.cleanup_on_exit: self.destroy_all_actors()
 
 
-    # def list_assets(self) -> str:
-    #     return self.services.list_assets("")
+    def list_aircrafts(self) -> str:
+        return self.services.list_aircrafts()
     
     def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
         return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)
