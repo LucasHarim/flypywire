@@ -19,8 +19,8 @@ class GameServices:
 
         self.socket = socket
     
-    # @service_request
-    # def list_assets(self, arg: str = "") -> str: ...
+    @service_request
+    def get_assets_library(self) -> list: ...
 
     @service_request
     def spawn_asset(self, game_asset: str, rolename: str, transform: str, parent_id: str = "") -> None: ...
@@ -30,6 +30,9 @@ class GameServices:
 
     @service_request
     def destroy_all_actors(self) -> None: ...
+
+    @service_request
+    def destroy_all_markers(self) -> None: ...
 
     @service_request
     def get_transform(self, actor_id: str) -> Transform: ...
@@ -62,4 +65,11 @@ class GameServices:
         lifetime: float) -> None: ...
 
     @service_request
-    def draw_axis(self, transform: str, parent_id: str, size: float, label: str) -> None: ...
+    def draw_axes(self,
+        transform: Transform,
+        width: float,
+        size: float,
+        label: str,
+        parent_id: str,
+        lifetime: float,
+        right_hand: bool) -> None: ...
