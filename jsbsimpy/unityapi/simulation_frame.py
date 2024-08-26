@@ -1,15 +1,14 @@
 import json
 from typing import Dict
-from dataclasses import dataclass
 
 from .aircraft_state import AircraftState
 
-@dataclass
 class SimulationFrame:
 
-    timestamp: float
-    aircrafts: Dict[str, AircraftState]
-
+    def __init__(self, timestamp, aircrafts: Dict[str, AircraftState]):
+        
+        self.timestamp = timestamp
+        self.aircrafts = aircrafts
 
     def dumps(self):
 

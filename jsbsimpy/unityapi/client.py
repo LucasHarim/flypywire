@@ -3,14 +3,17 @@
 # from __future__ import annotations 
 import zmq
 import json
-from typing import List
+from typing import Dict
 from zmq_requests import service_request
 from jsbsimpy.unityapi.context import SimulationContext
+from jsbsimpy.unityapi.simulation_frame import SimulationFrame
+from jsbsimpy.unityapi.aircraft_state import AircraftState
 from jsbsimpy.unityapi.unityengine_classes import Transform, Vector3, Color
 import time
 import numpy as np
 
-
+##TODO: Add a poller to Client in order to publish messages in a more controlled way. 
+##TODO Get rid of time.sleep() for publishing in realtime
 class Client:
 
     def __init__(self, host: str = 'tcp://127.0.0.1', port: int = 5555, timeout_ms: int = 5000):
@@ -25,6 +28,8 @@ class Client:
 
         self.publisher = zmq.Context().socket(zmq.PUB)
         self.publisher.bind(f'{self.host}:{self.port}')
+        
+        self._aircrafts: Dict[str, AircraftState] = dict()
 
         self._check_connection_with_server()
 
@@ -44,8 +49,16 @@ class Client:
         except zmq.error.Again:
             raise Exception(f'Timeout. Client cannot establish connection to server at {self.host}:{self.port}')
 
-    
-    
+    ##TODO: move this to SimulationContext
+    def update_aircraft(self, aircraft_name: str, aircraft_state: AircraftState) -> None:
+        self._aircrafts.update({aircraft_name: aircraft_state})
+
+    def publish_aircraft_state(self, timestamp = time.time()) -> None:
+
+        sim_frame = SimulationFrame(timestamp, self._aircrafts)
+        self.publisher.send_string(f'topic/jsbsim:{sim_frame.dumps()}')
+        
+        
 if __name__ == '__main__':
 
     client = Client(port=2000)

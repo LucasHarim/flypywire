@@ -1,5 +1,6 @@
 import time
 from jsbsimpy.unityapi.game_services import GameServices
+from jsbsimpy.unityapi.actors import Actor
 from jsbsimpy.unityapi.unityengine_classes import (
     Geolocation,
     Transform,
