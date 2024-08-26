@@ -31,20 +31,6 @@ def get_outputs_from_fdm(
     
     return {prop.name: fdm[prop.name] for prop in properties}
 
-'''
-    #TODO: 
-    Define the standard message structure for sending to the UnityAPI according
-    to the following class:
-    
-    public double Latitude {get; set;}
-    public double Longitude {get; set;}
-    public double AltitudeMeters {get; set;}
-
-    public float RollRad {get; set;}
-    public float PitchRad {get; set;}
-    public float YawRad {get; set;}
-'''
-
 # position and attitude
 altitude_sl_ft = BoundedProperty('position/h-sl-ft', 'altitude above mean sea level [ft]', -1400, 85000)
 altitude_sl_m = BoundedProperty('position/h-sl-meters', 'altitude above mean sea level [m]', -1400 * FT_TO_M, 85000 * FT_TO_M)
