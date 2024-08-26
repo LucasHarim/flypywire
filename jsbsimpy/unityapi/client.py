@@ -69,34 +69,38 @@ if __name__ == '__main__':
 
     with client.SimulationContext(False) as ctx:
         
-        # ctx.destroy_all_actors()
-        # ctx.spawn_asset(
-        #     game_asset="Aircrafts/Missile",
-        #     rolename='Main-Missile',
-        #     transform= Transform(Vector3(10, 10, 10), Vector3(0, 0, -90)))
+        assets = ctx.get_assets_library()
+        print(assets)
+        ctx.spawn_asset(
+            game_asset = assets[0],
+            rolename='Main-Missile',
+            transform= Transform())
         
-        # ctx.spawn_asset(
-        #     game_asset="Aircrafts/Missile",
-        #     rolename='Side-Missile',
-        #     transform= Transform(Vector3(5, 5, 5), Vector3(0, 0, 90)),
-        #     parent_id='Main-Missile')
+        ctx.spawn_asset(
+            game_asset="Aircrafts/Missile",
+            rolename='Side-Missile',
+            transform= Transform(Vector3(5, 10, 10), Vector3(0, 0, 90)),
+            parent_id='Main-Missile')
 
-        ctx.draw_actor_trail("A320(Clone)", width = 0.5, start_color = Color(1, 1, 0), end_color=Color(0, 1, 0),lifetime = 10)
+        ctx.draw_axes(transform= Transform(Vector3(0, 1, 0)),parent_id='Main-Missile', lifetime=30, right_hand=True)
+        
+        # ctx.draw_actor_trail("Main-Missile", width = 0.1, start_color = Color(1, 1, 0), end_color=Color(0, 1, 0),lifetime = 10)
         # ctx.draw_axis(Transform(), "Main-Missile")
 
-        while connected:
+        # while connected:
             
-            pos = Vector3(u * t, 2*np.sin(t), 2*np.cos(t))
-            rot = Vector3(30*np.sin(0.1*t), 30*np.cos(0.1*t), 45*np.sin(0.05*t))
+            # pos = Vector3(u * t, 2*np.sin(t), 2*np.cos(t))
+            # rot = Vector3(30*np.sin(0.1*t), 30*np.cos(0.1*t), 45*np.sin(0.05*t))
 
             # ctx.set_transform('Main-Missile', Transform(pos,rot))
             # ctx.set_position('Main-Missile', pos)
             
             # if t%5 == 0: ctx.freeze_actor('Main-Missile')
 
-            t += 1
+            # t += 1
 
-            if t > 100: break
+            # if t > 10000: break
+            
 
         
         time.sleep(100)

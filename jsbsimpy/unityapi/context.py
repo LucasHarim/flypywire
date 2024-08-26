@@ -29,11 +29,13 @@ class SimulationContext:
     '''
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         
-        if self.cleanup_on_exit: self.destroy_all_actors()
+        if self.cleanup_on_exit: 
+            self.destroy_all_actors()
+            self.destroy_all_markers()
 
 
-    # def list_assets(self) -> str:
-    #     return self.services.list_assets("")
+    def get_assets_library(self) -> str:
+        return self.services.get_assets_library()
     
     def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
         return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)
@@ -43,6 +45,9 @@ class SimulationContext:
     
     def destroy_all_actors(self) -> None:
         return self.services.destroy_all_actors()
+    
+    def destroy_all_markers(self) -> None:
+        return self.services.destroy_all_markers()
 
     def get_transform(self, actor_id: str) -> Transform:
         return self.services.get_transform(actor_id)
@@ -77,7 +82,13 @@ class SimulationContext:
         
         return self.services.draw_actor_trail(actor_id, width, start_color.dumps(), end_color.dumps(), label, lifetime)
     
-    def draw_axis(self, transform: Transform, parent_id: str = "", size: float = 10) -> None:
+    def draw_axes(self, 
+        width: float = 0.01,
+        size: float = 1,
+        transform: Transform = Transform(),
+        parent_id: str = "",
+        lifetime: float = -1,
+        right_hand: bool = False) -> None:
         
-        label = f"{parent_id}.axis.{time.time_ns()}"
-        return self.services.draw_axis(transform.dumps(), parent_id, size, label)
+        label = f"{parent_id}.axes.{time.time_ns()}"
+        return self.services.draw_axes(transform.dumps(), width, size, label, parent_id, lifetime, right_hand)
