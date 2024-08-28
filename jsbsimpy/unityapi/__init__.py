@@ -3,5 +3,5 @@ from .unityengine_classes import (
     Transform,
     GameObject)
 
-from .actors import Actor, Aircraft
+from .actors import Actor
 from .aircraft_state import AircraftState, get_aircraft_state_from_fdm

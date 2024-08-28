@@ -5,6 +5,7 @@ from jsbsimpy.unityapi.unityengine_classes import (
     Geolocation,
     Transform,
     Vector3,
+    GameObject,
     Color)
 
 class SimulationContext:
@@ -37,6 +38,45 @@ class SimulationContext:
     def get_assets_library(self) -> str:
         return self.services.get_assets_library()
     
+    def get_prefab_library(self) -> str:
+        return self.services.get_prefab_library()
+    
+    def spawn_gameobject(
+            self,
+            gameobject: GameObject,
+            transform: Transform = Transform(),
+            geolocation: Geolocation = None,
+            relative_to: GameObject = None,
+            attach: bool = False) -> Actor: ##TODO: make this function return an Actor
+        
+        if geolocation:
+            return self.services.spawn_gameobject_using_geolocation(
+                gameobject.prefab,
+                gameobject.name,
+                geolocation.dumps())
+        
+        elif attach: 
+            return self.services.spawn_gameobject_attached_to_parent(
+                gameobject.prefab,
+                gameobject.name,
+                transform.dumps(),
+                relative_to.name)
+        
+        elif relative_to:
+            return self.services.spawn_gameobject_relative_to_other(
+                gameobject.prefab,
+                gameobject.name,
+                transform.dumps(),
+                relative_to.name)
+        
+        return self.services.spawn_gameobject_using_transform(
+            gameobject.prefab,
+            gameobject.name,
+            transform.dumps())
+        
+        
+    
+
     def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
         return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)
     

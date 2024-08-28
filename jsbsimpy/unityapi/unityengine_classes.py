@@ -36,9 +36,18 @@ class Geolocation(BaseDataclass):
 
     latitude: float
     longitude: float
-    altitude: float
+    height_m: float
 
-
+    
+    def dumps(self) -> str:
+        data = {
+            "Longitude": self.longitude,
+            "Latitude": self.latitude,
+            "Height": self.height_m
+        }
+        
+        return json.dumps(data)
+    
 def context_required(function):
     
     def wrapper(function, *args, **kwargs):
@@ -53,34 +62,9 @@ def context_required(function):
 
 
 class GameObject:
-    
-    ITER = iter(range(1000))
 
-    def __init__(self, game_asset: str, name: str, parent: GameObject = None, context = None):
+    def __init__(self, name: str, prefab: str):
 
-        self.game_asset = game_asset
-    
-        if name == None:
-            name = f"{game_asset}[{next(ITER)}]"
-        
         self.name = name
-        self.parent = parent
-
-        self.context = context
-    
-    def set_context(self, context) -> None:
-        self.context = context
-    
-    @context_required
-    def spawn(self) -> None:
-        self.context.spawn_gameobject(self)
-
-    @context_required
-    def get_position(self, relative_to: GameObject) -> Vector3:
-
-        return self.context.get_position(self, relative_to)
-    
-    @context_required
-    def set_position(self, position: Vector3, relative_to: GameObject) -> None:
-        return self.context.set_position(self, position, relative_to) 
-    
+        self.prefab = prefab
+        
