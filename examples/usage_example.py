@@ -10,7 +10,9 @@ target = unity.GameObject("StaticObjects/sphere", "target")
 
 
 with client.RenderContext() as ctx:
-
+    
+    ctx.set_origin(geoloation = unity.Geolocation())
+    
     ctx.spawn_gameobject(a320, geolocation = unity.Geolocation(10.032, -12.012, 1000))
     ctx.spawn_gameobject(gripen, relative_to = a320, transform = unity.Transform(unity.Vector(10, 0, 0)))
     ctx.spawn_gameobject(target, parent = a320, transform = unity.Transform(unity.Vector3(0, 0, -10), unity.Vector3(30, 0, 0)))

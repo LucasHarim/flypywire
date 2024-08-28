@@ -107,6 +107,12 @@ class SimulationContext:
     def set_geolocation(self, actor_id: str, geolocation: Geolocation) -> None:
         return self.services.set_geolocation(actor_id, geolocation.dumps())
     
+    def get_origin(self) -> Geolocation:
+        return self.get_geolocation("SimulationOrigin")
+    
+    def set_origin(self, geolocation: Geolocation) -> None:
+        return self.set_geolocation("SimulationOrigin", geolocation)
+    
     def freeze_actor(self, actor_id: str) -> None:
 
         if actor_id in self.actor_clone_count:

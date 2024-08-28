@@ -8,9 +8,12 @@ from jsbsimpy.unityapi.unityengine_classes import (
     Geolocation,
     Color)
 
+def str_to_geolocation(val_str: str) -> Geolocation:
+    lon_lat_height = json.loads(val_str)
+    return Geolocation(lon_lat_height["Latitude"], lon_lat_height["Longitude"], lon_lat_height["Height"])
 
 Deserializers.add_deserializer(Vector3, lambda val_str: Vector3(**json.loads(val_str)))
-Deserializers.add_deserializer(Geolocation, lambda val_str: Geolocation(**json.loads(val_str)))
+Deserializers.add_deserializer(Geolocation, lambda val_str: str_to_geolocation(val_str))
 Deserializers.add_deserializer(Transform, lambda val_str: Transform(Vector3(**json.loads(val_str)['position']), Vector3(**json.loads(val_str)['rotation'])))
 
 class GameServices:
@@ -59,11 +62,11 @@ class GameServices:
     def set_position(self, actor_id: str, position: str) -> None: ...
 
     @service_request
-    def get_geolocation(self, actor_id: str) -> Geolocation: ...
+    def get_geolocation(self, gameObjectName: str) -> Geolocation: ...
 
     @service_request
-    def set_geolocation(self, actor_id, geolocation: str) -> None: ...
-
+    def set_geolocation(self, gameObjectName, geolocation: str) -> None: ...
+        
     @service_request
     def freeze_actor(self, actor_id: str, clone_name: str) -> None: ...
 
