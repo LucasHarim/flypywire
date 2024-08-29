@@ -1,7 +1,6 @@
 import time
 from flypywire import SimulationState
 from flypywire.unityapi.game_services import GameServices
-from flypywire.unityapi import Actor
 from flypywire.unityapi import (
     Geolocation,
     Transform,
@@ -43,8 +42,6 @@ class RenderContext:
         self.publisher.publish_simulation_state(simulation_state)
         time.sleep(time_sleep_s)
 
-    def get_assets_library(self) -> str:
-        return self.services.get_assets_library()
     
     def get_prefab_library(self) -> str:
         return self.services.get_prefab_library()
@@ -55,7 +52,7 @@ class RenderContext:
             transform: Transform = Transform(),
             geolocation: Geolocation = None,
             relative_to: GameObject = None,
-            attach: bool = False) -> Actor: ##TODO: make this function return an Actor
+            attach: bool = False) -> None: ##TODO: make this function return an Actor
         
         if geolocation:
             return self.services.spawn_gameobject_using_geolocation(
@@ -81,9 +78,7 @@ class RenderContext:
             gameobject.prefab,
             gameobject.name,
             transform.dumps())
-        
-        
-    
+            
 
     def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
         return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)

@@ -5,6 +5,5 @@ from .unityengine_classes import (
     Geolocation,
     Color)
 
-from .actors import Actor
 from .client import Client
 from .context import RenderContext
