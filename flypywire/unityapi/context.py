@@ -1,14 +1,16 @@
 import time
-from jsbsimpy.unityapi.game_services import GameServices
-from jsbsimpy.unityapi.actors import Actor
-from jsbsimpy.unityapi.unityengine_classes import (
+from flypywire import SimulationState
+from flypywire.unityapi.game_services import GameServices
+from flypywire.unityapi import Actor
+from flypywire.unityapi import (
     Geolocation,
     Transform,
     Vector3,
     GameObject,
     Color)
 
-class SimulationContext:
+
+class RenderContext:
 
     def __init__(self, client, cleanup_on_exit: bool = True):
 
@@ -22,18 +24,24 @@ class SimulationContext:
     def __enter__(self): 
         return self
 
-    
     '''
         #TODO: Fixing problem with socket on exit.
         - The service self.destroy_all_actors() fails on exit if other services 
         are on going. It happens probably because the req-rep is not properly finished
     '''
+
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         
         if self.cleanup_on_exit: 
             self.destroy_all_actors()
             self.destroy_all_markers()
 
+    def publish_simulation_state(self,
+        simulation_state: SimulationState,
+        time_sleep_s: float = 0.03) -> None:
+        
+        self.publisher.publish_simulation_state(simulation_state)
+        time.sleep(time_sleep_s)
 
     def get_assets_library(self) -> str:
         return self.services.get_assets_library()

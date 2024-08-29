@@ -1,8 +1,7 @@
 from __future__ import annotations
 from jsbsim import FGFDMExec
 from .unityengine_classes import GameObject
-from .aircraft_state import AircraftState
-import jsbsimpy.properties as prp
+import flypywire.jsbsim_fdm.properties as prp
 
 class Actor(GameObject):
 

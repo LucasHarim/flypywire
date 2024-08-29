@@ -2,7 +2,7 @@ import math
 from typing import List, Union, Dict, NewType
 import collections
 import jsbsim
-from jsbsimpy.formatting import make_valid_name
+from flypywire.jsbsim_fdm.formatting import make_valid_name
 
 FT_TO_M = 0.3048
 PropertyName = NewType("PropertyName", str)
@@ -130,19 +130,3 @@ gust_down_fps = Property('atmosphere/gust-down-fps', 'Gust down [ft/s]')
 gust_east_fps = Property('atmosphere/gust-east-fps', 'Gust from East [ft/s]')
 gust_north_fps = Property('atmosphere/gust-north-fps', 'Gust from North [ft/s]')
 headwind_fps = Property('atmosphere/headwind-fps', 'Headwind [ft/s]')
-
-
-DEFAULT_FDM_OUTPUTS = [
-    sim_time_s,
-    altitude_sl_ft,
-    altitude_agl_ft,
-    lat_geod_deg,
-    lng_geoc_deg,
-    roll_rad,
-    pitch_rad,
-    heading_deg,
-    u_fps,
-    v_fps,
-    w_fps,
-    dist_from_start_lat_mt,
-    dist_from_start_lon_mt]

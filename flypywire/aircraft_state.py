@@ -1,18 +1,30 @@
 import json
-from dataclasses import dataclass
 from jsbsim import FGFDMExec
-import jsbsimpy.properties as prp
+from flypywire.jsbsim_fdm import properties as prp
 
-@dataclass
 class AircraftState:
 
-    latitude: float
-    longitude: float
-    height_m: float
-    roll_rad: float = 0
-    pitch_rad: float = 0
-    yaw_rad: float = 0
 
+    def __init__(self,
+        latitude: float,
+        longitude: float,
+        height_m: float,
+        roll_rad: float,
+        pitch_rad: float,
+        yaw_rad: float,
+        **additional_data):
+
+        self.latitude = latitude
+        self.longitude = longitude
+        self.height_m = height_m
+        self.roll_rad = roll_rad
+        self.pitch_rad = pitch_rad
+        self.yaw_rad = yaw_rad
+        self.additional_data = additional_data
+        
+    def __str__(self) -> str:
+        return "".join(["AircraftState:","\n", self.dumps()])
+        
     def to_dict(self) -> dict:
         return {
             'Latitude': self.latitude,
@@ -20,7 +32,8 @@ class AircraftState:
             'AltitudeMeters': self.height_m,
             'RollRad': self.roll_rad,
             "PitchRad": self.pitch_rad,
-            "YawRad": self.yaw_rad
+            "YawRad": self.yaw_rad,
+            **self.additional_data
         }        
         
     def dumps(self) -> str:

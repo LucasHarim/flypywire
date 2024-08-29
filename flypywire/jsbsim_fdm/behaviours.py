@@ -1,3 +1,4 @@
+from __future__ import annotations
 from py_trees.behaviour import Behaviour
 from py_trees.common import Status
 from py_trees.composites import Sequence
@@ -6,9 +7,9 @@ import logging
 from numpy import round
 from jsbsim import FGFDMExec
 
-import jsbsimpy.properties as prp
-from jsbsimpy.properties import Property, BoundedProperty
-from jsbsimpy.control import PIDController
+from flypywire.jsbsim_fdm import properties as prp
+from flypywire.jsbsim_fdm.properties import Property, BoundedProperty
+from flypywire.control import PIDController
 
 INF = 10**9
 

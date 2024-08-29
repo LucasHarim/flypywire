@@ -2,7 +2,7 @@ import json
 from zmq import Socket
 from zmq_requests import service_request, Deserializers
 
-from jsbsimpy.unityapi.unityengine_classes import (
+from flypywire.unityapi.unityengine_classes import (
     Vector3,
     Transform,
     Geolocation,

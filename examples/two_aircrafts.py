@@ -1,14 +1,14 @@
 import os
 import time
 import jsbsim
-from jsbsimpy import Client
-from jsbsimpy.unityapi import (
+from flypywire import Client
+from flypywire.unityapi import (
     Transform,
     Vector3,
     GameObject,
     AircraftState, get_aircraft_state_from_fdm)
 
-from jsbsimpy import properties as prp
+from flypywire import properties as prp
 
 if __name__ == '__main__':
     
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     a320 = GameObject("Aircrafts/A320", 'main-a320')
     gripen = GameObject("Aircrafts/JAS39Gripen", 'gripen')
     
-    with client.SimulationContext() as ctx:
+    with client.RenderContext() as ctx:
         
         ctx.spawn_asset(a320)
         ctx.spawn_asset(gripen, Transform(Vector3(10, 10, 10), Vector3(0, 90, 0)))

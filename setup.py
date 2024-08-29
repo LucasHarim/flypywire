@@ -1,12 +1,12 @@
 
 from distutils.core import setup
 
-setup(name='jsbsimpy',
+setup(name='flypywire',
       version='1.0',
       description='Exploring JSBSim and ZeroMQ functionalities',
       author='Lucas Harim G. C.',
       author_email='harimlgc@usp.br',
-      packages = ['jsbsimpy'],
+      packages = ['flypywire'],
     install_requires = [
       'numpy',
       'jsbsim',

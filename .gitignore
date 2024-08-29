@@ -162,3 +162,4 @@ cython_debug/
 .vscode*
 side_code
 *test*
+*old_stuff/

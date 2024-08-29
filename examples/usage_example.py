@@ -30,10 +30,10 @@ with client.RenderContext() as ctx:
             engines = "Running")
         
         
-        ctx.simulation_state = fp.SimulationState(
+        sim_state = fp.SimulationState(
             timestamp = time.time(),
             aircrafts = {a320.name : a320_state})
         
-        ctx.publish_simulation_state(delta_time = 0.1) ##Use time.sleep(delta_time) inside here or something like that
+        ctx.publish_simulation_state(sim_state) ##Use time.sleep(delta_time) inside here or something like that
 
         
