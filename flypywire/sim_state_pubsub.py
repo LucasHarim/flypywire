@@ -10,7 +10,7 @@ from typing import List, Union, Dict, NewType
 from flypywire import SimulationState, AircraftState
 
 
-LOGGING_FORMAT = '[%(asctime)s] [%(topic)s] %(message)s'
+LOGGING_FORMAT = '[%(asctime)s] %(message)s'
 logging.basicConfig(format = LOGGING_FORMAT, level=logging.INFO)
 
 
@@ -40,7 +40,7 @@ class Publisher:
 
         self.socket.send_string(state.dumps())
         
-        if self.debug: logging.info(msg = f'Publishing state:\n{state}')
+        if self.debug: logging.info(msg = f'Publishing {state}')
 
     def close(self) -> None:
 
