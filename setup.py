@@ -8,10 +8,9 @@ setup(name='flypywire',
       author_email='harimlgc@usp.br',
       packages = ['flypywire'],
     install_requires = [
-      'numpy',
+      'numpy==1.24.4',
       'jsbsim',
-      'matplotlib',
-      'PyQt5',
+      'py-trees==0.8.3',
       'pyzmq',
       'zmq-requests @ git+https://github.com/LucasHarim/zmq-requests@main']
      )
