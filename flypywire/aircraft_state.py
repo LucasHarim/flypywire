@@ -1,9 +1,9 @@
+from __future__ import annotations
 import json
 from jsbsim import FGFDMExec
 from flypywire.jsbsim_fdm import properties as prp
 
 class AircraftState:
-
 
     def __init__(self,
         latitude: float,
@@ -22,9 +22,26 @@ class AircraftState:
         self.yaw_rad = yaw_rad
         self.additional_data = additional_data
         
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return "".join(["AircraftState:","\n", self.dumps()])
+
+    @staticmethod
+    def deserialize_dict(aircraft_state_dict: dict) -> AircraftState:
         
+        aircraft_state = AircraftState(
+            aircraft_state_dict["Latitude"],
+            aircraft_state_dict["Longitude"],
+            aircraft_state_dict["AltitudeMeters"],
+            aircraft_state_dict["RollRad"],
+            aircraft_state_dict["PitchRad"],
+            aircraft_state_dict["YawRad"])
+        
+        
+        aircraft_state.additional_data = dict([(key, aircraft_state_dict[key])\
+            for key in list(aircraft_state_dict.keys())[6:]])
+        
+        return aircraft_state
+
     def to_dict(self) -> dict:
         return {
             'Latitude': self.latitude,
@@ -38,7 +55,7 @@ class AircraftState:
         
     def dumps(self) -> str:
 
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(), indent=4)
 
 
 def get_aircraft_state_from_fdm(fdm: FGFDMExec) -> AircraftState:

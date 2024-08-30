@@ -40,7 +40,7 @@ class Publisher:
 
         self.socket.send_string(state.dumps())
         
-        if self.debug: logging.info(msg = f'Publishing {state}')
+        if self.debug: logging.info(msg = f'Publishing SimulationState:\n{state.dumps()}')
 
     def close(self) -> None:
 
@@ -93,7 +93,7 @@ class Subscriber:
                 self.buffer.append(msg)
                 self._update_last_msg_time()
                 
-                if self.debug: logging.info(msg = f'Receiving message:\n{msg}')
+                if self.debug: logging.info(msg = f'Receiving:\n{msg}')
             
             except zmq.error.Again:
                 if self._timeout:
@@ -111,11 +111,7 @@ class Subscriber:
         self._listener_thread.start()
 
     def get_simulation_state(self) -> SimulationState: # type: ignore
-        
-        data: dict = json.loads(self.buffer.pop())
-        state = SimulationState(data["Timestamp"], data["Aircrafts"])
-        
-        return state
+        return SimulationState.deserialize(self.buffer.pop())
         
         
     def close(self) -> None:
