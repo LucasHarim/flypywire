@@ -24,12 +24,10 @@ class Publisher:
         self.host = host
         self.port = port
         self.address = f"{self.host}:{self.port}"
+        self.socket = zmq.Context().socket(zmq.PUB)
+        self.socket.bind(self.address)
 
         self.debug = debug
-        
-        self._context = zmq.Context()
-        self.socket = self._context.socket(zmq.PUB)
-        self.socket.bind(self.address)
         
     
     def __str__(self) -> str:
@@ -59,13 +57,13 @@ class Subscriber:
         self.host = host
         self.port = port
         self.address = f'{self.host}:{self.port}'
-        self.debug = debug
-        self.timeout_secs = timeout_secs
 
-        self._context = zmq.Context()
-        self.socket = self._context.socket(zmq.SUB)
+        self.socket = zmq.Context().socket(zmq.SUB)
         self.socket.connect(self.address)
         self.socket.subscribe("") #Subscribing to all topics in this address
+        
+        self.debug = debug
+        self.timeout_secs = timeout_secs
         
         self.__last_msg_time = -10
         
@@ -80,6 +78,7 @@ class Subscriber:
     @property
     def _timeout(self) -> bool:
         return time.time() - self.__last_msg_time > self.timeout_secs
+
 
     def _update_last_msg_time(self) -> None:
         self.__last_msg_time = time.time()
@@ -112,7 +111,6 @@ class Subscriber:
 
     def get_simulation_state(self) -> SimulationState: # type: ignore
         return SimulationState.deserialize(self.buffer.pop())
-        
         
     def close(self) -> None:
         self.socket.close()

@@ -21,9 +21,9 @@ if __name__ == '__main__':
 
         time += 1
 
-        # if sub.is_data_available:
+        if sub.is_data_available:
 
-        #     sub.get_simulation_state()
+            sub.get_simulation_state()
             
             
 

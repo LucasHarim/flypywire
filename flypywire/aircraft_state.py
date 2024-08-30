@@ -36,11 +36,11 @@ class AircraftState:
             aircraft_state_dict["PitchRad"],
             aircraft_state_dict["YawRad"])
         
-        
         aircraft_state.additional_data = dict([(key, aircraft_state_dict[key])\
             for key in list(aircraft_state_dict.keys())[6:]])
         
         return aircraft_state
+
 
     def to_dict(self) -> dict:
         return {
@@ -53,8 +53,8 @@ class AircraftState:
             **self.additional_data
         }        
         
-    def dumps(self) -> str:
 
+    def dumps(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
 
