@@ -1,4 +1,5 @@
 import time
+from collections import namedtuple
 from flypywire import SimulationState
 from flypywire.unityapi.game_services import GameServices
 from flypywire.unityapi import (
@@ -8,6 +9,8 @@ from flypywire.unityapi import (
     GameObject,
     Color)
 
+
+SimulationOrigin = GameObject('SimulationOrigin', None)
 
 class RenderContext:
 
@@ -34,6 +37,7 @@ class RenderContext:
         if self.cleanup_on_exit: 
             self.destroy_all_actors()
             self.destroy_all_markers()
+            
 
     def publish_simulation_state(self,
         simulation_state: SimulationState,
@@ -51,7 +55,7 @@ class RenderContext:
             gameobject: GameObject,
             transform: Transform = Transform(),
             geolocation: Geolocation = None,
-            relative_to: GameObject = None,
+            relative_to: GameObject = SimulationOrigin,
             attach: bool = False) -> None: ##TODO: make this function return an Actor
         
         if geolocation:
@@ -67,17 +71,13 @@ class RenderContext:
                 transform.dumps(),
                 relative_to.name)
         
-        elif relative_to:
+        else:
             return self.services.spawn_gameobject_relative_to_other(
                 gameobject.prefab,
                 gameobject.name,
                 transform.dumps(),
                 relative_to.name)
         
-        return self.services.spawn_gameobject_using_transform(
-            gameobject.prefab,
-            gameobject.name,
-            transform.dumps())
             
 
     def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
@@ -98,11 +98,11 @@ class RenderContext:
     def set_transform(self, actor_id: str, transform: Transform) -> None:
         return self.services.set_transform(actor_id, transform.dumps())
     
-    def get_position(self, actor_id) -> Vector3:
-        return self.services.get_position(actor_id)
+    def get_position(self, actor: GameObject, relative_to: GameObject = SimulationOrigin) -> Vector3:
+        return self.services.get_position(actor.name, relative_to.name)
     
-    def set_position(self, actor_id, position: Vector3) -> None:
-        return self.services.set_position(actor_id, position.dumps())
+    def set_position(self, actor: GameObject, position: Vector3, relative_to: GameObject = SimulationOrigin) -> None:
+        return self.services.set_position(actor.name, position.dumps(), relative_to.name)
 
     def get_geolocation(self, actor_id: str) -> Geolocation:
         return self.services.get_geolocation(actor_id)
@@ -135,9 +135,20 @@ class RenderContext:
         width: float = 0.01,
         size: float = 1,
         transform: Transform = Transform(),
-        parent_id: str = "",
+        parent: GameObject = None,
         lifetime: float = -1,
-        right_hand: bool = False) -> None:
+        right_hand: bool = False) -> GameObject:
         
-        label = f"{parent_id}.axes.{time.time_ns()}"
-        return self.services.draw_axes(transform.dumps(), width, size, label, parent_id, lifetime, right_hand)
+        if parent:
+            label = f"{parent.name}.axes.{time.time_ns()}"
+            self.services.draw_axes(transform.dumps(), width, size, label, parent.name, lifetime, right_hand)
+            
+        else:
+            label = f"axes.{time.time_ns()}"
+            self.services.draw_axes(transform.dumps(), width, size, label, "", lifetime, right_hand)
+        
+        axes = GameObject(label, None)
+        
+        return axes
+
+        

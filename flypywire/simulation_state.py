@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json
+import orjson
 from typing import Dict, NewType
 from flypywire.aircraft_state import AircraftState
 
@@ -19,7 +19,7 @@ class SimulationState:
     @staticmethod
     def deserialize(sim_state_str: str) -> SimulationState:
 
-        sim_state_dict = json.loads(sim_state_str)
+        sim_state_dict = orjson.loads(sim_state_str)
         aircrafts: Dict[str, dict] = sim_state_dict["Aircrafts"]
     
         for aircraft_name, aircraft_state_dict in aircrafts.items():
@@ -36,4 +36,4 @@ class SimulationState:
             }
         }
         
-        return json.dumps(sim_state, indent=4)
+        return orjson.dumps(sim_state, option=orjson.OPT_INDENT_2).decode()

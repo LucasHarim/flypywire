@@ -1,4 +1,4 @@
-import json
+import orjson
 from zmq import Socket
 from zmq_requests import service_request, Deserializers
 
@@ -9,12 +9,12 @@ from flypywire.unityapi.unityengine_classes import (
     Color)
 
 def str_to_geolocation(val_str: str) -> Geolocation:
-    lon_lat_height = json.loads(val_str)
+    lon_lat_height = orjson.loads(val_str)
     return Geolocation(lon_lat_height["Latitude"], lon_lat_height["Longitude"], lon_lat_height["Height"])
 
-Deserializers.add_deserializer(Vector3, lambda val_str: Vector3(**json.loads(val_str)))
+Deserializers.add_deserializer(Vector3, lambda val_str: Vector3(**orjson.loads(val_str)))
 Deserializers.add_deserializer(Geolocation, lambda val_str: str_to_geolocation(val_str))
-Deserializers.add_deserializer(Transform, lambda val_str: Transform(Vector3(**json.loads(val_str)['position']), Vector3(**json.loads(val_str)['rotation'])))
+Deserializers.add_deserializer(Transform, lambda val_str: Transform(Vector3(**orjson.loads(val_str)['position']), Vector3(**orjson.loads(val_str)['rotation'])))
 
 class GameServices:
 
@@ -56,10 +56,10 @@ class GameServices:
     def set_transform(self, actor_id: str, transform: str) -> None: ...
 
     @service_request
-    def get_position(self, actor_id: str) -> Vector3: ...
+    def get_position(self, actor_id: str, relative_to: str) -> Vector3: ...
 
     @service_request
-    def set_position(self, actor_id: str, position: str) -> None: ...
+    def set_position(self, actor_id: str, position: str, relative_to: str) -> None: ...
 
     @service_request
     def get_geolocation(self, gameObjectName: str) -> Geolocation: ...
