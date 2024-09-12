@@ -3,4 +3,5 @@ numpy==1.24.4
 packaging==24.0
 py-trees==0.8.3
 pyzmq==25.1.2
+orjson
 zmq-requests @ git+https://github.com/LucasHarim/zmq-requests@main

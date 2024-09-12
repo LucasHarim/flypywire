@@ -12,5 +12,6 @@ setup(name='flypywire',
       'jsbsim',
       'py-trees==0.8.3',
       'pyzmq',
+      'orjson',
       'zmq-requests @ git+https://github.com/LucasHarim/zmq-requests@main']
      )
