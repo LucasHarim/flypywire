@@ -1,4 +1,4 @@
-
+from setuptools import find_packages
 from distutils.core import setup
 
 setup(name='flypywire',
@@ -6,7 +6,7 @@ setup(name='flypywire',
       description='Exploring JSBSim and ZeroMQ functionalities',
       author='Lucas Harim G. C.',
       author_email='harimlgc@usp.br',
-      packages = ['flypywire'],
+      packages = find_packages(),
     install_requires = [
       'numpy==1.24.4',
       'jsbsim',
