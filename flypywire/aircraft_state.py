@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json
+import orjson
 from jsbsim import FGFDMExec
 from flypywire.jsbsim_fdm import properties as prp
 
@@ -55,7 +55,7 @@ class AircraftState:
         
 
     def dumps(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return orjson.dumps(self.to_dict(), option=orjson.OPT_INDENT_2).decode("utf-8")
 
 
 def get_aircraft_state_from_fdm(fdm: FGFDMExec) -> AircraftState:

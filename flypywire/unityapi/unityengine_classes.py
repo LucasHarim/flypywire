@@ -1,12 +1,12 @@
 from __future__ import annotations
-import json
+import orjson
 from dataclasses import dataclass, asdict
 
 class BaseDataclass:
 
     def dumps(self) -> str:
 
-        return json.dumps(asdict(self))
+        return orjson.dumps(asdict(self)).decode()
 
 
 @dataclass
@@ -46,7 +46,7 @@ class Geolocation(BaseDataclass):
             "Height": self.height_m
         }
         
-        return json.dumps(data)
+        return orjson.dumps(data).decode()
     
 def context_required(function):
     

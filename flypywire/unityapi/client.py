@@ -2,10 +2,6 @@
 #! We get an error when import annotations!! It comes from service_request. Check how to solve it
 # from __future__ import annotations 
 import zmq
-import json
-import time
-import numpy as np
-
 from zmq_requests import service_request
 from flypywire import Publisher
 from flypywire.unityapi.context import RenderContext
