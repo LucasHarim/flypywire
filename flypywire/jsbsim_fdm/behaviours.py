@@ -162,7 +162,7 @@ class Trigger(BaseBehaviour):
 
         return Status.RUNNING
     
-    def terminate(self) -> None:
+    def terminate(self, new_status) -> None:
 
         if self.on_terminate: self.on_terminate()
         print(f'[Terminating]: {self.name}')

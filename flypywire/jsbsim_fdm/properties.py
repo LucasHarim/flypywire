@@ -63,6 +63,7 @@ altitude_rate_fps = Property('velocities/h-dot-fps', 'Rate of altitude change [f
 
 
 # controls state
+#TODO: Add 'fcs/(...)-pos-rad', which seems to be more accurate
 aileron_left = BoundedProperty('fcs/left-aileron-pos-norm', 'left aileron position, normalised', -1, 1)
 aileron_right = BoundedProperty('fcs/right-aileron-pos-norm', 'right aileron position, normalised', -1, 1)
 elevator = BoundedProperty('fcs/elevator-pos-norm', 'elevator position, normalised', -1, 1)
