@@ -44,11 +44,11 @@ class RenderContext:
         time_sleep_s: float = 0.03) -> None:
         
         self.publisher.publish_simulation_state(simulation_state)
-        time.sleep(time_sleep_s)
+        if time_sleep_s > 0: time.sleep(time_sleep_s)
 
     
-    def get_prefab_library(self) -> str:
-        return self.services.get_prefab_library()
+    def get_assets_library(self) -> str:
+        return self.services.get_assets_library()
     
     def spawn_gameobject(
             self,
@@ -116,14 +116,14 @@ class RenderContext:
     def set_origin(self, geolocation: Geolocation) -> None:
         return self.set_geolocation("SimulationOrigin", geolocation)
     
-    def freeze_actor(self, actor_id: str) -> None:
+    def freeze_actor(self, actor: GameObject, lifetime: float = -1) -> None:
 
-        if actor_id in self.actor_clone_count:
-            self.actor_clone_count[actor_id] += 1
+        if actor.name in self.actor_clone_count:
+            self.actor_clone_count[actor.name] += 1
         else: 
-            self.actor_clone_count[actor_id] = 1
-        
-        return self.services.freeze_actor(actor_id, f"{actor_id}.clone[{self.actor_clone_count.get(actor_id)}]")
+            self.actor_clone_count[actor.name] = 1
+        clone_name = f"{actor.name}.clone[{self.actor_clone_count.get(actor.name)}]"
+        return self.services.freeze_actor(actor.name, clone_name, lifetime)
     
     def draw_actor_trail(self, actor_id: str, width: float, start_color: Color = Color(1, 0, 0), end_color: Color = Color(0, 0, 1), lifetime: float = 10) -> None:
         
