@@ -125,6 +125,9 @@ class RenderContext:
         clone_name = f"{actor.name}.clone[{self.actor_clone_count.get(actor.name)}]"
         return self.services.freeze_actor(actor.name, clone_name, lifetime)
     
+    def spawn_camera(self, rolename: str, parent: GameObject, transform: Transform = Transform(), port: int = 2000, semantic_segmentation: bool = False) -> None:
+        return self.services.spawn_camera(rolename, port, transform.dumps(), parent.name, semantic_segmentation)
+
     def draw_actor_trail(self, actor_id: str, width: float, start_color: Color = Color(1, 0, 0), end_color: Color = Color(0, 0, 1), lifetime: float = 10) -> None:
         
         label = f"{actor_id}.trajectory[{time.time_ns()}]"

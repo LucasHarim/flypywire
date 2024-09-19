@@ -69,6 +69,9 @@ class GameServices:
         
     @service_request
     def freeze_actor(self, actor_id: str, clone_name: str, lifetime: float) -> None: ...
+    
+    @service_request
+    def spawn_camera(self, rolename: str, port: int, transform: str, parent_name: str, semantic_segmentation: bool) -> None: ...
 
     @service_request
     def draw_actor_trail(self,
@@ -81,7 +84,7 @@ class GameServices:
 
     @service_request
     def draw_axes(self,
-        transform: Transform,
+        transform: str,
         width: float,
         size: float,
         label: str,
