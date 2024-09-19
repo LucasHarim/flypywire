@@ -45,10 +45,6 @@ class WithinSimulationTimeRange(BaseBehaviour):
         self.t_init: Union[float, int] = None
         self.t_end: Union[float, int] = None
 
-        if isinstance(self.timespan, (list, tuple)):
-            self.t_init = self.timespan[0]
-            self.t_end = self.timespan[1]
-
         self.on_init = on_init
         self.on_terminate = on_terminate
         
@@ -69,6 +65,10 @@ class WithinSimulationTimeRange(BaseBehaviour):
             self.t_init = self.fdm.get_sim_time()
             self.t_end = self.t_init + self.timespan
         
+        elif isinstance(self.timespan, (list, tuple)):
+            self.t_init = self.timespan[0]
+            self.t_end = self.timespan[1]
+
         self._check_time_input()
 
         if self.on_init: self.on_init()
