@@ -1,5 +1,6 @@
 from __future__ import annotations
 import orjson
+from math import isnan
 from jsbsim import FGFDMExec
 from flypywire.jsbsim_fdm import properties as prp
 
@@ -59,11 +60,19 @@ class AircraftState:
 
 
 def get_aircraft_state_from_fdm(fdm: FGFDMExec) -> AircraftState:
-
-        return AircraftState(
-                fdm[prp.lat_geod_deg()],
-                fdm[prp.lng_geoc_deg()],
-                fdm[prp.altitude_sl_m()],
-                fdm[prp.roll_rad()],
-                fdm[prp.pitch_rad()],
-                fdm[prp.yaw_rad()])
+        
+        values = (
+            fdm[prp.lat_geod_deg()],
+            fdm[prp.lng_geoc_deg()],
+            fdm[prp.altitude_sl_m()],
+            fdm[prp.roll_rad()],
+            fdm[prp.pitch_rad()],
+            fdm[prp.yaw_rad()])
+        
+        for v in values:
+            if isnan(v):
+                raise Exception("FDM output is not a number.")
+                return None
+            
+        return AircraftState(*values)
+        
