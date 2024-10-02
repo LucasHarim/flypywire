@@ -27,7 +27,7 @@ if __name__ == '__main__':
     
     fdm.set_dt(DT)
     
-    origin = unity.Geolocation(-24.727390,  15.342391, 2000)
+    origin = unity.GeoCoordinate(-24.727390,  15.342391, 2000)
 
     fdm[prp.initial_latitude_geod_deg()] = origin.latitude
     fdm[prp.initial_longitude_geoc_deg()] = origin.longitude
@@ -48,10 +48,10 @@ if __name__ == '__main__':
     
     with client.RenderContext() as ctx:
         
-        b747 = unity.GameObject('B747', "Aircrafts/USAF747")
+        b747 = unity.GameObject('B747', "Airplanes/USAF747")
         
         ctx.set_origin(origin)
-        ctx.spawn_gameobject(b747, geolocation=origin)
+        ctx.spawn_gameobject(b747, geocoordinate=origin)
         
 
         while True:

@@ -32,7 +32,7 @@ class Color(BaseDataclass):
 
 
 @dataclass
-class Geolocation(BaseDataclass):
+class GeoCoordinate(BaseDataclass):
 
     latitude: float
     longitude: float

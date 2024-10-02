@@ -59,12 +59,12 @@ class AircraftState:
         return orjson.dumps(self.to_dict(), option=orjson.OPT_INDENT_2).decode("utf-8")
 
 
-def get_aircraft_state_from_fdm(fdm: FGFDMExec) -> AircraftState:
+def get_aircraft_state_from_fdm(fdm: FGFDMExec, terrain_elevation_m: float = 0) -> AircraftState:
         
         values = (
             fdm[prp.lat_geod_deg()],
             fdm[prp.lng_geoc_deg()],
-            fdm[prp.altitude_sl_m()],
+            fdm[prp.altitude_sl_m()] - terrain_elevation_m,
             fdm[prp.roll_rad()],
             fdm[prp.pitch_rad()],
             fdm[prp.yaw_rad()])

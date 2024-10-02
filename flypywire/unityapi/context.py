@@ -3,11 +3,13 @@ from collections import namedtuple
 from flypywire import SimulationState
 from flypywire.unityapi.game_services import GameServices
 from flypywire.unityapi import (
-    Geolocation,
+    GeoCoordinate,
     Transform,
     Vector3,
     GameObject,
     Color)
+
+from flypywire.unityapi.camera import Camera
 
 
 SimulationOrigin = GameObject('SimulationOrigin', None)
@@ -48,73 +50,68 @@ class RenderContext:
 
     
     def get_assets_library(self) -> str:
-        return self.services.get_assets_library()
+        return self.services.GetAssetsLibrary()
     
     def spawn_gameobject(
             self,
             gameobject: GameObject,
             transform: Transform = Transform(),
-            geolocation: Geolocation = None,
+            geocoordinate: GeoCoordinate = None,
             relative_to: GameObject = SimulationOrigin,
             attach: bool = False) -> None: ##TODO: make this function return an Actor
         
-        if geolocation:
-            return self.services.spawn_gameobject_using_geolocation(
+        if geocoordinate:
+            return self.services.SpawnGameObjectUsingGeoCoordinate(
                 gameobject.prefab,
                 gameobject.name,
-                geolocation.dumps())
+                geocoordinate.dumps())
         
         elif attach: 
-            return self.services.spawn_gameobject_attached_to_parent(
+            return self.services.SpawnGameObjectAttachedToParent(
                 gameobject.prefab,
                 gameobject.name,
                 transform.dumps(),
                 relative_to.name)
         
         else:
-            return self.services.spawn_gameobject_relative_to_other(
+            return self.services.SpawnGameObjectRelativeToOther(
                 gameobject.prefab,
                 gameobject.name,
                 transform.dumps(),
                 relative_to.name)
-        
-            
-
-    def spawn_asset(self, game_asset: str, rolename: str, transform: Transform, parent_id: str = "") -> None:
-        return self.services.spawn_asset(game_asset, rolename, transform.dumps(), parent_id)
     
-    def destroy_actor(self, actor_id: str) -> None:
-        return self.services.destroy_actor(actor_id)
+    def destroy_actor(self, actor: GameObject) -> None:
+        return self.services.DestroyActor(actor.name)
     
     def destroy_all_actors(self) -> None:
-        return self.services.destroy_all_actors()
+        return self.services.DestroyAllActors()
     
     def destroy_all_markers(self) -> None:
-        return self.services.destroy_all_markers()
+        return self.services.DestroyAllMarkers()
 
-    def get_transform(self, actor_id: str) -> Transform:
-        return self.services.get_transform(actor_id)
+    def get_transform(self, actor: GameObject) -> Transform:
+        return self.services.GetTransform(actor.name)
     
-    def set_transform(self, actor_id: str, transform: Transform) -> None:
-        return self.services.set_transform(actor_id, transform.dumps())
+    def set_transform(self, actor: GameObject, transform: Transform) -> None:
+        return self.services.SetTransform(actor.name, transform.dumps())
     
     def get_position(self, actor: GameObject, relative_to: GameObject = SimulationOrigin) -> Vector3:
-        return self.services.get_position(actor.name, relative_to.name)
+        return self.services.GetPosition(actor.name, relative_to.name)
     
     def set_position(self, actor: GameObject, position: Vector3, relative_to: GameObject = SimulationOrigin) -> None:
-        return self.services.set_position(actor.name, position.dumps(), relative_to.name)
+        return self.services.SetPosition(actor.name, position.dumps(), relative_to.name)
 
-    def get_geolocation(self, actor_id: str) -> Geolocation:
-        return self.services.get_geolocation(actor_id)
+    def get_geocoordinate(self, actor: GameObject) -> GeoCoordinate:
+        return self.services.GetGeoCoordinate(actor.name)
     
-    def set_geolocation(self, actor_id: str, geolocation: Geolocation) -> None:
-        return self.services.set_geolocation(actor_id, geolocation.dumps())
+    def set_geocoordinate(self, actor: GameObject, geocoordinate: GeoCoordinate) -> None:
+        return self.services.SetGeoCoordinate(actor.name, geocoordinate.dumps())
     
-    def get_origin(self) -> Geolocation:
-        return self.get_geolocation("SimulationOrigin")
+    def get_origin(self) -> GeoCoordinate:
+        return self.get_geocoordinate(SimulationOrigin)
     
-    def set_origin(self, geolocation: Geolocation) -> None:
-        return self.set_geolocation("SimulationOrigin", geolocation)
+    def set_origin(self, geocoordinate: GeoCoordinate) -> None:
+        return self.set_geocoordinate(SimulationOrigin, geocoordinate)
     
     def freeze_actor(self, actor: GameObject, lifetime: float = -1) -> None:
 
@@ -123,32 +120,42 @@ class RenderContext:
         else: 
             self.actor_clone_count[actor.name] = 1
         clone_name = f"{actor.name}.clone[{self.actor_clone_count.get(actor.name)}]"
-        return self.services.freeze_actor(actor.name, clone_name, lifetime)
+        return self.services.FreezeActor(actor.name, clone_name, lifetime)
     
-    def spawn_camera(self, rolename: str, parent: GameObject, transform: Transform = Transform(), port: int = 2000, semantic_segmentation: bool = False) -> None:
-        return self.services.spawn_camera(rolename, port, transform.dumps(), parent.name, semantic_segmentation)
-
-    def draw_actor_trail(self, actor_id: str, width: float, start_color: Color = Color(1, 0, 0), end_color: Color = Color(0, 0, 1), lifetime: float = 10) -> None:
+    def spawn_camera(self,
+        label: str,
+        parent: GameObject,
+        transform: Transform = Transform(),
+        host: str = 'tcp:127.0.0.1',
+        port: int = 2000,
+        resolution_width: int = 640,
+        resolution_height: int = 480) -> Camera:
         
-        label = f"{actor_id}.trajectory[{time.time_ns()}]"
+        self.services.SpawnCamera(
+            label, parent.name,
+            transform.dumps(),
+            host, port,
+            resolution_width,
+            resolution_height)
         
-        return self.services.draw_actor_trail(actor_id, width, start_color.dumps(), end_color.dumps(), label, lifetime)
+        return Camera(host, port)
     
     def draw_axes(self, 
         width: float = 0.01,
         size: float = 1,
         transform: Transform = Transform(),
-        parent: GameObject = None,
+        parent: GameObject = SimulationOrigin,
         lifetime: float = -1,
         right_hand: bool = False) -> GameObject:
         
-        if parent:
-            label = f"{parent.name}.axes.{time.time_ns()}"
-            self.services.draw_axes(transform.dumps(), width, size, label, parent.name, lifetime, right_hand)
-            
-        else:
-            label = f"axes.{time.time_ns()}"
-            self.services.draw_axes(transform.dumps(), width, size, label, "", lifetime, right_hand)
+        label = f"{parent.name}.axes.{time.time_ns()}"
+        
+        self.services.DrawAxes(
+            transform.dumps(),
+            width, size, label,
+            parent.name,
+            lifetime,
+            right_hand)
         
         axes = GameObject(label, None)
         

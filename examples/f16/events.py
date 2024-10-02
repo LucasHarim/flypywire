@@ -17,41 +17,36 @@ def event_sequence(fdm: FGFDMExec, aircraft_state: AircraftState) -> BehaviourTr
     pitch_controller = PIDController()
     roll_controller = PIDController()
 
-    landing_gear_up_trigger = beh.Trigger(
-        'LG-Up trigger',
-        on_init= lambda: aircraft_state.additional_data.update({'Event': 'LG-Up'}) ,
-        success_condition = lambda: not bool(fdm[prp.gear()]))
     
-    wait_2s = beh.Idle(
+    straight_flight = beh.WithinSimulationTimeRange(
+        'Full Throttle and nose up',
+        lambda: -pitch_controller.run_step(5*deg2rad, fdm[prp.pitch_rad()]),
         fdm,
-        timespan=2)
+        timespan = 5)
     
-    nose_up_until_stall = Parallel('Inducing Stall', ParallelPolicy.SUCCESS_ON_ALL,
-    [
+    turning = Parallel('Turning', ParallelPolicy.SUCCESS_ON_ALL, [
+        
         beh.WithinSimulationTimeRange(
-            'Pitch-Up',
+            'Aileron command',
+            lambda: fdm.set_property_value(
+                prp.aileron_cmd(),
+                roll_controller.run_step(-60*deg2rad, fdm[prp.roll_rad()])),
+            fdm,
+            timespan = 600),
+        
+        beh.WithinSimulationTimeRange(
+            'Elevator command',
             lambda: fdm.set_property_value(
                 prp.elevator_cmd(),
-                -pitch_controller.run_step(
-                    60 * deg2rad,
-                    fdm[prp.pitch_rad()]
-                )
-            ),
+                -pitch_controller.run_step(10*deg2rad, fdm[prp.pitch_rad()])),
             fdm,
-            timespan = 1000),
-        
-        beh.StallTrigger(
-            'Stall-Trigger',
-            fdm,
-            on_terminate= lambda: fdm.set_property_value(prp.elevator_cmd(), 0))    
-    ])
-
+            timespan = 600)])
+    
     
     
     root = Sequence('main-sequence', [
-        landing_gear_up_trigger,
-        wait_2s,
-        nose_up_until_stall,
+        straight_flight,
+        turning,
         beh.Idle(fdm)
     ])
 
