@@ -32,7 +32,8 @@ def event_sequence(fdm: FGFDMExec, aircraft_state: AircraftState) -> BehaviourTr
                 prp.aileron_cmd(),
                 roll_controller.run_step(-60*deg2rad, fdm[prp.roll_rad()])),
             fdm,
-            timespan = 600),
+            timespan = 600,
+            on_terminate = lambda: fdm.set_property_value(prp.aileron_cmd(), 0.0)),
         
         beh.WithinSimulationTimeRange(
             'Elevator command',
@@ -40,7 +41,9 @@ def event_sequence(fdm: FGFDMExec, aircraft_state: AircraftState) -> BehaviourTr
                 prp.elevator_cmd(),
                 -pitch_controller.run_step(10*deg2rad, fdm[prp.pitch_rad()])),
             fdm,
-            timespan = 600)])
+            timespan = 600,
+            on_terminate = lambda: fdm.set_property_value(prp.elevator_cmd(), 0.0))
+        ])
     
     
     

@@ -52,7 +52,6 @@ def get_inputs(fdm: jsbsim.FGFDMExec) -> bool:
     fdm[prp.aileron_cmd()] = axis_x + offset_x
     fdm[prp.elevator_cmd()] = -(axis_y + offset_y)
     
-    
     return True
 
 def start_sim(aircraft: aircrafts.AircraftTemplate, origin: unity.GeoCoordinate):

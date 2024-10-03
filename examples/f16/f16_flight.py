@@ -9,6 +9,7 @@ from flypywire import (
 
 import flypywire.unityapi as unity
 from flypywire.jsbsim_fdm import properties as prp
+from flypywire import aircrafts
 from flypywire.jsbsim_fdm.atmosphere import (
     TurbulenceTypes,
     MILSPECWindIntensity,
@@ -20,33 +21,17 @@ from events import event_sequence
 
 m2ft = 3.281
 deg2rad = np.pi/180
+DT = 0.03
 
 if __name__ == '__main__':
     
-    DT = 0.02
-    
-    fdm = jsbsim.FGFDMExec(os.getenv('JSBSIM_ROOT'))
-    fdm.load_model('f16')
-    
+    aircraft = aircrafts.F16
+
+    origin = unity.GeoCoordinate(-24.727390,  15.342391, 8000) ##Namibia
+    fdm = aircraft.fdm_cruise(origin)
     fdm.set_dt(DT)
     
-    # origin = unity.GeoCoordinate(46.536804,  7.962639, 8000) ##Alps
-    # origin = unity.GeoCoordinate(-2.4859385, -43.128407, 8000) ## Lensois
-    origin = unity.GeoCoordinate(-24.727390,  15.342391, 8000) ##Namibia
-    
-
-    fdm[prp.initial_latitude_geod_deg()] = origin.latitude
-    fdm[prp.initial_longitude_geoc_deg()] = origin.longitude
-    fdm[prp.initial_altitude_ft()] = origin.height_m * m2ft
-    fdm[prp.initial_u_fps()] = 800
-    fdm[prp.engine_running()] = 1
-    fdm[prp.gear()] = 0
-    fdm[prp.gear_all_cmd()] = 0.0 ## Landing Gears Up
-    
-    fdm.run_ic()
-    
     mission = event_sequence(fdm, get_aircraft_state_from_fdm(fdm))
-    # fdm[prp.turbulence_type()] = TurbulenceTypes.CULP
     
     client = unity.Client()
 
@@ -56,11 +41,9 @@ if __name__ == '__main__':
     
     with client.RenderContext(False) as ctx:
         
-        print(ctx.get_assets_library())
-        f16 = unity.GameObject('main-f16', "Airplanes/JAS39Gripen")
-        
         ctx.set_origin(origin)
-        ctx.spawn_gameobject(f16, geocoordinate=origin)
+        asset = aircraft.get_asset('main-aircraft')
+        ctx.spawn_gameobject(asset, geocoordinate=origin)
         
         # axes = ctx.draw_axes(
         #     width = 0.05, size = 15,
@@ -97,7 +80,7 @@ if __name__ == '__main__':
                 'Heading [deg]': round(fdm[prp.heading_deg()], 3)
             }
 
-            aircrafts = {f16.name: f16_state}
+            aircrafts = {asset.name: f16_state}
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
