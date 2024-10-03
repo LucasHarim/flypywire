@@ -6,8 +6,8 @@ from flypywire import (
 
 if __name__ == '__main__':
 
-    pub = Publisher(debug=False)
-    sub = Subscriber(debug = True)
+    pub = Publisher(debug=True)
+    sub = Subscriber(debug = False)
     sub.start_listening()
 
     time = 0
