@@ -3,7 +3,7 @@ import jsbsim
 import numpy as np
 import time
 from flypywire import (
-    AircraftState,
+    ActorState,
     SimulationState,
     get_aircraft_state_from_fdm)
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     roll_controller = PIDController(K_P = 1, dt = DT)
     u_controller = PIDController(K_P=1, K_I = 1, K_D = 1, dt = DT)
     
-    with client.RenderContext(False) as ctx:
+    with client.RenderContext() as ctx:
         
         ctx.set_origin(origin)
         asset = aircraft.get_asset('main-aircraft')
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         #     lifetime= -1,
         #     right_hand=True)
         
-        # ctx.spawn_camera('main-cam', f16, transform=unity.Transform(position = unity.Vector3(0, 1.2, 0)))
+        # ctx.spawn_camera('main-cam', asset, transform=unity.Transform(position = unity.Vector3(0, 1.2, 0)))
         
         # fdm['fcs/fbw-override'] = 1
         # ctx.draw_actor_trail(f16.name, 0.1, unity.Color(0, 0, 1), unity.Color(1, 0, 0))
@@ -68,11 +68,11 @@ if __name__ == '__main__':
             fdm[prp.throttle_cmd()] = 0.75
             
             fdm.run()
-            if (i % 5 == 0 and fdm[prp.sim_time_s()] < 20):
+            # if (i % 5 == 0 and fdm[prp.sim_time_s()] < 20):
             # if (np.isclose(fdm[prp.sim_time_s()], t_freeze, atol = 0.05) and fdm[prp.sim_time_s()] < 20):
                 # ctx.freeze_actor(f16, lifetime = -1)
-                t_freeze += 0.1
-            i += 1
+            #     t_freeze += 0.1
+            # i += 1
 
             f16_state = get_aircraft_state_from_fdm(fdm)
             
@@ -80,11 +80,10 @@ if __name__ == '__main__':
                 'Heading [deg]': round(fdm[prp.heading_deg()], 3)
             }
 
-            aircrafts = {asset.name: f16_state}
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
-                    aircrafts = aircrafts),
+                    actors =  {asset.name: f16_state}),
                 time_sleep_s = 1e-5)
             
             

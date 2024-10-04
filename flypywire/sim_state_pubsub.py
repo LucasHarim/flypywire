@@ -7,7 +7,7 @@ import logging
 import time
 from typing import List, Union, Dict, NewType
 
-from flypywire import SimulationState, AircraftState
+from flypywire import SimulationState, ActorState
 
 
 LOGGING_FORMAT = '[%(asctime)s] %(message)s'

@@ -2,7 +2,7 @@ import os
 import jsbsim
 import numpy as np
 from flypywire import (
-    AircraftState,
+    ActorState,
     SimulationState,
     get_aircraft_state_from_fdm)
 
@@ -27,14 +27,16 @@ if __name__ == '__main__':
     
     fdm.set_dt(DT)
     
-    origin = unity.GeoCoordinate(-24.727390,  15.342391, 2000)
+    origin = unity.GeoCoordinate(-24.727390,  15.342391, 10000)
 
     fdm[prp.initial_latitude_geod_deg()] = origin.latitude
     fdm[prp.initial_longitude_geoc_deg()] = origin.longitude
     fdm[prp.initial_altitude_ft()] = origin.height_m * m2ft
     fdm[prp.initial_u_fps()] = 700
-    # fdm[prp.engine_running()] = 1
-    fdm[prp.all_engines_running()] = -1
+    fdm[prp.engine_running()] = 1
+    fdm[prp.gear()] = 0
+    fdm[prp.gear_all_cmd()] = 0.0 ## Landing Gears Up
+    
     fdm.run_ic()
 
     fdm[prp.turbulence_type()] = TurbulenceTypes.STANDARD
@@ -58,7 +60,7 @@ if __name__ == '__main__':
             
             
             fdm[prp.elevator_cmd()] = -pitch_controller.run_step(2 * deg2rad, fdm[prp.pitch_rad()])
-            fdm[prp.aileron_cmd()] = roll_controller.run_step(roll_rad, fdm[prp.roll_rad()])
+            fdm[prp.aileron_cmd()] = roll_controller.run_step(0.0, fdm[prp.roll_rad()])
             fdm[prp.throttle_cmd()] = 0.75
 
             fdm.run()
@@ -67,13 +69,14 @@ if __name__ == '__main__':
             
             b747_state.additional_data = {
                 "u [ft/s]": round(fdm[prp.u_fps()], 2),
-                "Thrust [lb]": round(fdm[prp.engine_thrust_lbs()], 2)
+                "Thrust [lb]": round(fdm[prp.engine_thrust_lbs()], 2),
+                'Landing Gear Up': bool(not fdm[prp.gear()])
             }
 
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
-                    aircrafts = {b747.name: b747_state}),
+                    actors =  {b747.name: b747_state}),
                 time_sleep_s = DT)
         
             

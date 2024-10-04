@@ -2,7 +2,7 @@ from flypywire import (
     Publisher,
     Subscriber,
     SimulationState,
-    AircraftState)
+    ActorState)
 
 if __name__ == '__main__':
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     
     while True:
 
-        aicraft_state = AircraftState(time, 0, 1000, 0, 0, 0, foo = True, landing_gear = False)
+        aicraft_state = ActorState(time, 0, 1000, 0, 0, 0, foo = True, landing_gear = False)
 
         sim_state = SimulationState(time, aircrafts={'my-aircraft': aicraft_state})
         pub.publish_simulation_state(sim_state)

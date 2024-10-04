@@ -5,7 +5,7 @@ import zmq
 from zmq_requests import service_request
 from flypywire import Publisher
 from flypywire.unityapi.context import RenderContext
-from flypywire.aircraft_state import AircraftState
+from flypywire.actor_state import ActorState
 from flypywire.unityapi.unityengine_classes import Transform, Vector3, Color
 
 

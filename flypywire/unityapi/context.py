@@ -126,7 +126,7 @@ class RenderContext:
         label: str,
         parent: GameObject,
         transform: Transform = Transform(),
-        host: str = 'tcp:127.0.0.1',
+        host: str = 'tcp://127.0.0.1',
         port: int = 2000,
         resolution_width: int = 640,
         resolution_height: int = 480) -> Camera:

@@ -5,7 +5,7 @@ import jsbsim
 import numpy as np
 import pygame
 from flypywire import (
-    AircraftState,
+    ActorState,
     SimulationState,
     get_aircraft_state_from_fdm)
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
         
         main_aircraft_state = get_aircraft_state_from_fdm(fdm)
         side_aircraft_state = get_aircraft_state_from_fdm(fdm2)
-        # side_aircraft_state = AircraftState(
+        # side_aircraft_state = ActorState(
         #     main_aircraft_state.latitude + 0.001,
         #     main_aircraft_state.longitude + 0.0001,
         #     main_aircraft_state.height_m - 10,
@@ -154,28 +154,28 @@ if __name__ == '__main__':
             side_aircraft_state = get_aircraft_state_from_fdm(fdm2) 
             # if fdm[prp.sim_time_s()] < 2:
 
-            #     side_aircraft_state = AircraftState(
+            #     side_aircraft_state = ActorState(
             #     main_aircraft_state.latitude + 0.005,
             #     main_aircraft_state.longitude + 0.0001,
             #     main_aircraft_state.height_m + 50,
             #     0, 0, 0)
             # else:
                 
-            #     side_aircraft_state = AircraftState(
+            #     side_aircraft_state = ActorState(
             #         side_aircraft_state.latitude + 5e-5,
             #         side_aircraft_state.longitude,
             #         side_aircraft_state.height_m,
             #         0, 0, 0)
                 
             
-            aircrafts = {
+            actors =  {
                 main_aircraft.name: main_aircraft_state,
                 side_aircraft.name: side_aircraft_state}
             
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
-                    aircrafts = aircrafts),
+                    actors =  aircrafts),
                 time_sleep_s = 1e-4)
             
             screen.blit(ai.get_screen(fdm[prp.roll_rad()]/deg2rad, fdm[prp.pitch_rad()]/deg2rad), (0,0))

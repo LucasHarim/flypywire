@@ -8,11 +8,11 @@ from py_trees.trees import BehaviourTree
 from flypywire.jsbsim_fdm import properties as prp
 from flypywire.jsbsim_fdm import behaviours as beh
 from flypywire.control import PIDController
-from flypywire import AircraftState
+from flypywire import ActorState
 
 deg2rad = np.pi/180
 
-def event_sequence(fdm: FGFDMExec, aircraft_state: AircraftState) -> BehaviourTree:
+def event_sequence(fdm: FGFDMExec, aircraft_state: ActorState) -> BehaviourTree:
     
     pitch_controller = PIDController()
     roll_controller = PIDController()

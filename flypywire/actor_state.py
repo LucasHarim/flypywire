@@ -4,7 +4,7 @@ from math import isnan
 from jsbsim import FGFDMExec
 from flypywire.jsbsim_fdm import properties as prp
 
-class AircraftState:
+class ActorState:
 
     def __init__(self,
         latitude: float,
@@ -24,23 +24,23 @@ class AircraftState:
         self.additional_data = additional_data
         
     def __repr__(self) -> str:
-        return "".join(["AircraftState:","\n", self.dumps()])
+        return "".join(["ActorState:","\n", self.dumps()])
 
     @staticmethod
-    def deserialize_dict(aircraft_state_dict: dict) -> AircraftState:
+    def deserialize_dict(actor_state_dict: dict) -> ActorState:
         
-        aircraft_state = AircraftState(
-            aircraft_state_dict["Latitude"],
-            aircraft_state_dict["Longitude"],
-            aircraft_state_dict["AltitudeMeters"],
-            aircraft_state_dict["RollRad"],
-            aircraft_state_dict["PitchRad"],
-            aircraft_state_dict["YawRad"])
+        actor_state = ActorState(
+            actor_state_dict["Latitude"],
+            actor_state_dict["Longitude"],
+            actor_state_dict["AltitudeMeters"],
+            actor_state_dict["RollRad"],
+            actor_state_dict["PitchRad"],
+            actor_state_dict["YawRad"])
         
-        aircraft_state.additional_data = dict([(key, aircraft_state_dict[key])\
-            for key in list(aircraft_state_dict.keys())[6:]])
+        actor_state.additional_data = dict([(key, actor_state_dict[key])\
+            for key in list(actor_state_dict.keys())[6:]])
         
-        return aircraft_state
+        return actor_state
 
 
     def to_dict(self) -> dict:
@@ -59,7 +59,7 @@ class AircraftState:
         return orjson.dumps(self.to_dict(), option=orjson.OPT_INDENT_2).decode("utf-8")
 
 
-def get_aircraft_state_from_fdm(fdm: FGFDMExec, terrain_elevation_m: float = 0) -> AircraftState:
+def get_aircraft_state_from_fdm(fdm: FGFDMExec, terrain_elevation_m: float = 0) -> ActorState:
         
         values = (
             fdm[prp.lat_geod_deg()],
@@ -74,5 +74,5 @@ def get_aircraft_state_from_fdm(fdm: FGFDMExec, terrain_elevation_m: float = 0) 
                 raise Exception("FDM output is not a number.")
                 return None
             
-        return AircraftState(*values)
+        return ActorState(*values)
         

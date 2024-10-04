@@ -16,7 +16,7 @@ class Camera:
         self.socket.connect(f'{self.host}:{self.port}')
         self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
-        self.queue: Queue[np.array] = Queue(100)
+        self.queue: Queue[np.array] = Queue(10)
     
     @property
     def is_connected(self) -> bool:
@@ -27,20 +27,10 @@ class Camera:
         arr = np.frombuffer(self.socket.recv(), dtype = np.uint8)
         return cv2.imdecode(arr, flags = cv2.IMREAD_COLOR)
 
-
-
-
-
-
-        
-
-
 if __name__ == '__main__':
 
     cam = Camera(port = 2000)
-    
-
-    
+        
     while True:
         
         if cam.is_connected:

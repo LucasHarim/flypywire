@@ -6,7 +6,7 @@ import jsbsim
 import numpy as np
 import pygame
 from flypywire import (
-    AircraftState,
+    ActorState,
     SimulationState,
     get_aircraft_state_from_fdm)
 
@@ -54,7 +54,7 @@ def get_inputs(fdm: jsbsim.FGFDMExec) -> bool:
     
     return True
 
-def start_sim(aircraft: aircrafts.AircraftTemplate, origin: unity.GeoCoordinate):
+def start_sim(aircraft: aircrafts.ActorTemplate, origin: unity.GeoCoordinate):
     
     fdm = aircraft.fdm_cruise(origin)
 
@@ -102,7 +102,7 @@ def start_sim(aircraft: aircrafts.AircraftTemplate, origin: unity.GeoCoordinate)
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
-                    aircrafts = {main_aircraft.name: main_aircraft_state}),
+                    actors =  {main_aircraft.name: main_aircraft_state}),
                 time_sleep_s = 1e-4)
             
             screen.blit(ai.get_screen(fdm[prp.roll_rad()]/deg2rad, fdm[prp.pitch_rad()]/deg2rad), (0,0))

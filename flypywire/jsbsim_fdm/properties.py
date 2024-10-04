@@ -95,7 +95,7 @@ sim_time_s = Property('simulation/sim-time-sec', 'Simulation time [s]')
 
 # initial conditions
 initial_altitude_ft = Property('ic/h-sl-ft', 'initial altitude MSL [ft]')
-initial_terrain_altitude_ft = Property('ic/terrain-elevation-ft', 'initial terrain alt [ft]')
+initial_terrain_elevation_ft = Property('ic/terrain-elevation-ft', 'initial terrain alt [ft]')
 initial_longitude_geoc_deg = Property('ic/long-gc-deg', 'initial geocentric longitude [deg]')
 initial_latitude_geod_deg = Property('ic/lat-geod-deg', 'initial geodesic latitude [deg]')
 

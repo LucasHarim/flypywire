@@ -8,8 +8,10 @@ class AircraftTemplate:
 
     jsbsim_name: str
     asset_name: str
+    rolename: str = ""
 
     def get_asset(self, rolename: str) -> unity.GameObject:
+        self.rolename = rolename
         return unity.GameObject(rolename, self.asset_name)
     
     def fdm_cruise(self, origin: unity.GeoCoordinate) -> jsbsim.FGFDMExec:
@@ -25,7 +27,6 @@ T38 = AircraftTemplate('T38', 'Airplanes/T38')
 C172 = AircraftTemplate('c172p', 'Airplanes/Cessna172')
 T6 = AircraftTemplate('t6texan2', 'Airplanes/BeechcraftT6II')
 J3CUB = AircraftTemplate('J3Cub', 'Airplanes/PiperPA18')
-
 GLIDER = AircraftTemplate('SGS', 'Gliders/Glider01')
 
 _aircraft_list = [F16, F22, T38, T6, B747, A320, B787, C172, J3CUB, GLIDER]

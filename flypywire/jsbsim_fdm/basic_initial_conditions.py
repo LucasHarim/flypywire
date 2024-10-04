@@ -27,6 +27,7 @@ def setup_cruise_condition(model: str, origin: GeoCoordinate) -> jsbsim.FGFDMExe
     fdm[prp.initial_latitude_geod_deg()] = origin.latitude
     fdm[prp.initial_longitude_geoc_deg()] = origin.longitude
     fdm[prp.initial_altitude_ft()] = origin.height_m * m2ft
+    fdm[prp.initial_terrain_elevation_ft()] = 1e-3 #To avoid NaN
     fdm[prp.initial_u_fps()] = cruise_speed_fts[model]
     fdm[prp.engine_running()] = 1
     fdm[prp.gear()] = 0
