@@ -23,11 +23,8 @@ with client.RenderContext(False) as ctx:
         print(a)
 
     ctx.set_origin(origin)
-    # main_actor = unity.GameObject('main-actor', 'UAVs/FixedWing01')
-    main_actor = unity.GameObject('main-actor', 'Gliders/Glider01')
-    ctx.spawn_gameobject(main_actor)
-    
-    ctx.spawn_camera('main-cam', main_actor, transform=unity.Transform(position = unity.Vector3(0, 2, -5)))
+    main_actor = unity.GameObject('main-actor', 'Assets/Gliders/Glider01')
+    ctx.spawn_gameobject(main_actor, geocoordinate=origin)
 
     balloons = [asset for asset in ctx.get_assets_library() if 'HotAir' in asset]
     num_balloons = 80

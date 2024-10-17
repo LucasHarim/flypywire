@@ -105,7 +105,7 @@ class RenderContext:
         return self.services.GetGeoCoordinate(actor.name)
     
     def set_geocoordinate(self, actor: GameObject, geocoordinate: GeoCoordinate) -> None:
-        return self.services.SetGeoCoordinate(actor.name, geocoordinate.dumps())
+        return self.services.SetGeoCoordinateUsingStrings(actor.name, geocoordinate.dumps())
     
     def get_origin(self) -> GeoCoordinate:
         return self.get_geocoordinate(SimulationOrigin)

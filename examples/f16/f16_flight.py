@@ -41,39 +41,22 @@ if __name__ == '__main__':
     
     with client.RenderContext() as ctx:
         
-        ctx.set_origin(origin)
-        asset = aircraft.get_asset('main-aircraft')
-        ctx.spawn_gameobject(asset, geocoordinate=origin)
-        
-        # axes = ctx.draw_axes(
-        #     width = 0.05, size = 15,
-        #     parent=f16,
-        #     transform = unity.Transform(rotation = unity.Vector3(0, -90, 0)),
-        #     lifetime= -1,
-        #     right_hand=True)
-        
-        # ctx.spawn_camera('main-cam', asset, transform=unity.Transform(position = unity.Vector3(0, 1.2, 0)))
-        
-        # fdm['fcs/fbw-override'] = 1
-        # ctx.draw_actor_trail(f16.name, 0.1, unity.Color(0, 0, 1), unity.Color(1, 0, 0))
+        for a in ctx.get_assets_library():
+            print(a)
 
-        t_freeze = 1
-        i = 0
+        ctx.set_origin(origin)
+        
+        
+        asset = unity.GameObject('main-aircraft', 'Assets/Airplanes/F16')
+        ctx.spawn_gameobject(asset, geocoordinate=origin)
 
         while True:
-            
             
             mission.tick()
             
             fdm[prp.throttle_cmd()] = 0.75
             
             fdm.run()
-            # if (i % 5 == 0 and fdm[prp.sim_time_s()] < 20):
-            # if (np.isclose(fdm[prp.sim_time_s()], t_freeze, atol = 0.05) and fdm[prp.sim_time_s()] < 20):
-                # ctx.freeze_actor(f16, lifetime = -1)
-            #     t_freeze += 0.1
-            # i += 1
-
             f16_state = get_aircraft_state_from_fdm(fdm)
             
             f16_state.additional_data = {
@@ -84,6 +67,6 @@ if __name__ == '__main__':
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
                     actors =  {asset.name: f16_state}),
-                time_sleep_s = 1e-5)
+                time_sleep_s = 2e-5)
             
             

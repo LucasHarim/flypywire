@@ -18,16 +18,16 @@ class AircraftTemplate:
         return setup_cruise_condition(self.jsbsim_name, origin)
     
     
-F16 = AircraftTemplate('f16', 'Airplanes/F16')
-F22 = AircraftTemplate('f22', 'Airplanes/F22')
-B747 = AircraftTemplate('B747', 'Airplanes/USAF747')
-B787 = AircraftTemplate('787-8', 'Airplanes/B787')
-A320 = AircraftTemplate('A320', 'Airplanes/A320')
-T38 = AircraftTemplate('T38', 'Airplanes/T38')
-C172 = AircraftTemplate('c172p', 'Airplanes/Cessna172')
-T6 = AircraftTemplate('t6texan2', 'Airplanes/BeechcraftT6II')
-J3CUB = AircraftTemplate('J3Cub', 'Airplanes/PiperPA18')
-GLIDER = AircraftTemplate('SGS', 'Gliders/Glider01')
+F16 = AircraftTemplate('f16', 'Assets/Airplanes/F16')
+F22 = AircraftTemplate('f22', 'Assets/Airplanes/F22')
+B747 = AircraftTemplate('B747', 'Assets/Airplanes/USAF747')
+B787 = AircraftTemplate('787-8', 'Assets/Airplanes/B787')
+A320 = AircraftTemplate('A320', 'Assets/Airplanes/A320')
+T38 = AircraftTemplate('T38', 'Assets/Airplanes/T38')
+C172 = AircraftTemplate('c172p', 'Assets/Airplanes/Cessna172')
+T6 = AircraftTemplate('t6texan2', 'Assets/Airplanes/BeechcraftT6II')
+J3CUB = AircraftTemplate('J3Cub', 'Assets/Airplanes/PiperPA18')
+GLIDER = AircraftTemplate('SGS', 'Assets/Gliders/Glider01')
 
 _aircraft_list = [F16, F22, T38, T6, B747, A320, B787, C172, J3CUB, GLIDER]
 aircraft_collection = {a.jsbsim_name: a for a in _aircraft_list}
