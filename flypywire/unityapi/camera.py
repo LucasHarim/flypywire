@@ -3,6 +3,7 @@ import zmq
 import cv2
 import time
 from queue import Queue
+from typing import Callable
 from threading import Thread
 
 class Camera:
@@ -17,15 +18,46 @@ class Camera:
         self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
 
         self.queue: Queue[np.array] = Queue(10)
+        self.thread = Thread(target = self._enqueue_imgs, daemon=True)
+        
+        self.thread.start()
+        self._close_window = False
     
     @property
-    def is_connected(self) -> bool:
-        return self.socket.poll(timeout = 100, flags=zmq.POLLIN)
+    def img_available(self) -> bool:
+        return not self.queue.empty()
     
-    def get_image(self):
+    def _enqueue_imgs(self) -> None:
+
+        while True:
+
+            arr = np.frombuffer(self.socket.recv(), dtype = np.uint8)
+            
+            if self.queue.full():
+                _ = self.queue.get_nowait()
+                self.queue.task_done()
+            
+            self.queue.put(cv2.imdecode(arr, flags = cv2.IMREAD_COLOR))
+    
+    def get_image(self) -> np.array:
         
-        arr = np.frombuffer(self.socket.recv(), dtype = np.uint8)
-        return cv2.imdecode(arr, flags = cv2.IMREAD_COLOR)
+        img = self.queue.get_nowait()
+        self.queue.task_done()
+        return img
+
+
+    def imshow(self, winname: str = 'Camera') -> np.array:
+        
+        if self.img_available:
+            if not self._close_window:
+                frame = self.get_image()
+                cv2.imshow(winname, frame)
+            
+            if cv2.waitKey(1) == ord('q'):
+                self._close_window = True
+                cv2.destroyWindow(winname)
+            
+            return frame
 
 if __name__ == '__main__':
 
@@ -33,11 +65,5 @@ if __name__ == '__main__':
         
     while True:
         
-        if cam.is_connected:
-            frame = cam.get_image()
-            cv2.imshow('Camera', frame)
-            
-            if cv2.waitKey(1) == ord('q'):
-                break
-    cv2.destroyAllWindows()
+        cam.imshow()
 
