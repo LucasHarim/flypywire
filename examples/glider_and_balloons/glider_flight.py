@@ -88,7 +88,7 @@ with client.RenderContext() as ctx:
         glider.run()
         sim_time += dt
 
-        # if cam.is_connected:
+        # if cam.img_available:
         #     frame = cam.get_image()
         #     effect = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #     cv2.imshow('Camera', effect)

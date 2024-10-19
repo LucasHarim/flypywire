@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     while True:
         
-        if cam.is_connected:
+        if cam.img_available:
             frame = cam.get_image()
             out.write(frame)
             cv2.imshow('Camera', frame)

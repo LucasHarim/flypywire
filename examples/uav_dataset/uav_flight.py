@@ -53,7 +53,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    if args.video:
+    if args.record:
         fourcc = cv2.VideoWriter_fourcc(*'XVID')  # You can try 'MJPG', 'XVID', etc.
         out = cv2.VideoWriter('output.avi', fourcc, 60.0, (640, 480))
 
@@ -65,24 +65,24 @@ if __name__ == '__main__':
         
         ctx.set_origin(origin)
         ctx.spawn_gameobject(uav, geocoordinate=origin)
-        # time.sleep(10)
-        # if args.video:
-        ctx.spawn_camera('uav-cam', uav, transform=unity.Transform(position = unity.Vector3(y=0.15, z = 0.15), rotation = unity.Vector3(30)))
+        
+        if args.video:
+            ctx.spawn_camera('uav-cam', uav, transform=unity.Transform(position = unity.Vector3(y=0.15, z = 0.15), rotation = unity.Vector3(30)))
         
         cam = unity.Camera()
 
         for i in range(len(times)):
             
             if args.video:
-                if cam.is_connected:
+                if cam.img_available: 
                     frame = cam.get_image()
-                    if args.record: 
-                        out.write(frame)
                     cv2.imshow('Camera', frame)
                     
-                    if cv2.waitKey(1) == ord('q'):
-                        break
-    
+                    if args.record:
+                        out.write(frame)
+                if cv2.waitKey(1) == ord('q'):
+                    break
+
             x_ang, y_ang, z_ang = euler_from_quaternion(states['orientation_x'][i], states['orientation_y'][i], states['orientation_z'][i], states['orientation_w'][i])
             state_float64 =  [states['position_y'][i], states['position_x'][i], states['position_z'][i] + z_offset,
                             x_ang, y_ang, z_ang]
@@ -99,6 +99,5 @@ if __name__ == '__main__':
             )
             
     cv2.destroyAllWindows()
-    if args.record: out.release()
-
+    out.release()
             
