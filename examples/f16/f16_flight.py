@@ -1,7 +1,4 @@
-import os
-import jsbsim
 import numpy as np
-import time
 from flypywire import (
     ActorState,
     SimulationState,
@@ -47,8 +44,10 @@ if __name__ == '__main__':
         ctx.set_origin(origin)
         
         
-        asset = unity.GameObject('main-aircraft', 'Assets/Airplanes/F16')
+        asset = aircraft.get_asset('main-aircraft')
         ctx.spawn_gameobject(asset, geocoordinate=origin)
+        
+        ctx.draw_axes(parent = asset, size = 10, right_hand=True)
 
         while True:
             

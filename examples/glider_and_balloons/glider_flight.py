@@ -1,4 +1,4 @@
-import time
+import cv2
 import flypywire as fp
 import flypywire.unityapi as unity
 from flypywire.control import PIDController
@@ -17,7 +17,7 @@ glider = get_fdm(origin, DT)
 client = unity.Client()
 
 
-with client.RenderContext(False) as ctx:
+with client.RenderContext() as ctx:
     
     for a in ctx.get_assets_library():
         print(a)
@@ -25,9 +25,12 @@ with client.RenderContext(False) as ctx:
     ctx.set_origin(origin)
     main_actor = unity.GameObject('main-actor', 'Assets/Gliders/Glider01')
     ctx.spawn_gameobject(main_actor, geocoordinate=origin)
+    
+    # ctx.spawn_camera('main-cam', main_actor, transform = unity.Transform(unity.Vector3(0, 2, -5)))
+    # cam = unity.Camera(port = 2000)
 
     balloons = [asset for asset in ctx.get_assets_library() if 'HotAir' in asset]
-    num_balloons = 80
+    num_balloons = 50
     rolenames = [f'b[{i}]' for i in range(num_balloons)]
     
     geocoordinates = [unity.GeoCoordinate(
@@ -47,6 +50,7 @@ with client.RenderContext(False) as ctx:
     
     dt = DT
     sim_time = 0
+
     while True:
         
         glider[prp.elevator_cmd()] = - attitude_controller.run_step(2 * deg2rad, glider[prp.pitch_rad()])
@@ -83,6 +87,14 @@ with client.RenderContext(False) as ctx:
         
         glider.run()
         sim_time += dt
+
+        # if cam.is_connected:
+        #     frame = cam.get_image()
+        #     effect = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #     cv2.imshow('Camera', effect)
+            
+        #     if cv2.waitKey(1) == ord('q'):
+        #         break
 
 
 
