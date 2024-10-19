@@ -1,0 +1,2 @@
+pygame
+flight-instruments @ git+https://github.com/LucasHarim/flight-instruments@main
