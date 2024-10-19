@@ -6,7 +6,7 @@ from flypywire import (
 
 import flypywire.unityapi as unity
 from flypywire.jsbsim_fdm import properties as prp
-from flypywire import aircrafts
+from flypywire.jsbsim_fdm import aircrafts
 from flypywire.jsbsim_fdm.atmosphere import (
     TurbulenceTypes,
     MILSPECWindIntensity,
@@ -38,16 +38,12 @@ if __name__ == '__main__':
     
     with client.RenderContext() as ctx:
         
-        for a in ctx.get_assets_library():
-            print(a)
-
         ctx.set_origin(origin)
+
+        main_aircraft = aircraft.get_actor('main-aircraft')
+        ctx.spawn_actor(main_aircraft, origin)
         
-        
-        asset = aircraft.get_asset('main-aircraft')
-        ctx.spawn_gameobject(asset, geocoordinate=origin)
-        
-        ctx.draw_axes(parent = asset, size = 10, right_hand=True)
+        ctx.draw_axes(parent = main_aircraft, size = 10, right_hand=True)
 
         while True:
             
@@ -65,7 +61,7 @@ if __name__ == '__main__':
             ctx.publish_simulation_state(
                 SimulationState(
                     timestamp= round(fdm[prp.sim_time_s()], 2), 
-                    actors =  {asset.name: f16_state}),
+                    actors =  {main_aircraft.rolename: f16_state}),
                 time_sleep_s = 2e-5)
             
             

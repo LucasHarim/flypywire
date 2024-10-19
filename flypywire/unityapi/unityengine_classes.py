@@ -67,4 +67,5 @@ class GameObject:
 
         self.name = name
         self.prefab = prefab
+        self.rolename = name #Temporary
         

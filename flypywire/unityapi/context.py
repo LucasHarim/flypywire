@@ -7,7 +7,7 @@ from flypywire.unityapi import (
     Transform,
     Vector3,
     GameObject,
-    Color)
+    Actor)
 
 from flypywire.unityapi.camera import Camera
 
@@ -51,6 +51,10 @@ class RenderContext:
     
     def get_assets_library(self) -> str:
         return self.services.GetAssetsLibrary()
+    
+    def spawn_actor(self, actor: Actor, coordinate: GeoCoordinate) -> None:
+
+        return self.services.SpawnGameObjectUsingGeoCoordinate(actor.asset_path, actor.rolename, coordinate.dumps())
     
     def spawn_gameobject(
             self,

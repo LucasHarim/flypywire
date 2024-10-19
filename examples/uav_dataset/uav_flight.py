@@ -62,7 +62,9 @@ if __name__ == '__main__':
     with client.RenderContext() as ctx:
 
         uav = unity.GameObject('uav', 'Assets/UAVs/DJIM300')
-        
+        for name in ctx.get_assets_library():
+            print(name)
+            
         ctx.set_origin(origin)
         ctx.spawn_gameobject(uav, geocoordinate=origin)
         

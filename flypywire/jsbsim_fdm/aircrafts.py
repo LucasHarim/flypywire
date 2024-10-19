@@ -7,12 +7,12 @@ from flypywire.jsbsim_fdm.basic_initial_conditions import setup_cruise_condition
 class AircraftTemplate:
 
     jsbsim_name: str
-    asset_name: str
+    asset_path: str
     rolename: str = ""
 
-    def get_asset(self, rolename: str) -> unity.GameObject:
+    def get_actor(self, rolename: str) -> unity.GameObject:
         self.rolename = rolename
-        return unity.GameObject(rolename, self.asset_name)
+        return unity.Actor(rolename, self.asset_path)
     
     def fdm_cruise(self, origin: unity.GeoCoordinate) -> jsbsim.FGFDMExec:
         return setup_cruise_condition(self.jsbsim_name, origin)

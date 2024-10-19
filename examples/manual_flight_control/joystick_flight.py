@@ -16,7 +16,7 @@ from flypywire.jsbsim_fdm.atmosphere import (
     MILSPECWindSeverity)
 
 import flypywire.unityapi as unity
-from flypywire import aircrafts
+from flypywire.jsbsim_fdm import aircrafts
 from flypywire.jsbsim_fdm import properties as prp
 from flypywire.control import PIDController
 from flight_instruments import AttitudeIndicator
@@ -77,7 +77,7 @@ def start_sim(aircraft: aircrafts.ActorTemplate, origin: unity.GeoCoordinate):
         
         ctx.set_origin(origin)
 
-        main_aircraft = aircraft.get_asset('main-aircraft')
+        main_aircraft = aircraft.get_actor('main-aircraft')
         ctx.spawn_gameobject(main_aircraft, geocoordinate=origin)
         
         main_aircraft_state = get_aircraft_state_from_fdm(fdm)

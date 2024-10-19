@@ -8,7 +8,7 @@ from flypywire import (
     get_aircraft_state_from_fdm)
 
 import flypywire.unityapi as unity
-from flypywire import aircrafts
+from flypywire.jsbsim_fdm import aircrafts
 from flypywire.jsbsim_fdm import properties as prp
 from flypywire.jsbsim_fdm.atmosphere import (
     TurbulenceTypes,
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     
     with client.RenderContext() as ctx:
         
-        f16 = main_aircraft.get_asset('main-aircraft')
+        f16 = main_aircraft.get_actor('main-aircraft')
         b747 = unity.GameObject('787-tank', "Airplanes/USAF747")
 
         ctx.set_origin(origin)
