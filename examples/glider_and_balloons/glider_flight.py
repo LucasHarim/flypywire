@@ -23,14 +23,16 @@ with client.RenderContext() as ctx:
         print(a)
 
     ctx.set_origin(origin)
-    main_actor = unity.GameObject('main-actor', 'Assets/Gliders/Glider01')
+    main_actor = unity.GameObject('main-actor', 'Assets/UAVs/FixedWing01')
+    # main_actor = unity.GameObject('main-actor', 'Assets/Gliders/Glider01')
     ctx.spawn_gameobject(main_actor, geocoordinate=origin)
     
     # ctx.spawn_camera('main-cam', main_actor, transform = unity.Transform(unity.Vector3(0, 2, -5)))
+    # ctx.spawn_camera('main-cam', main_actor, transform = unity.Transform(unity.Vector3(0, -0.35, -0.25)))
     # cam = unity.Camera(port = 2000)
 
     balloons = [asset for asset in ctx.get_assets_library() if 'HotAir' in asset]
-    num_balloons = 50
+    num_balloons = 10
     rolenames = [f'b[{i}]' for i in range(num_balloons)]
     
     geocoordinates = [unity.GeoCoordinate(
@@ -78,7 +80,7 @@ with client.RenderContext() as ctx:
             float(geocoordinates[i].height_m),
             0, 0, 0) for i in range(num_balloons)]
         
-        
+        # cam.imshow()
         ctx.publish_simulation_state(
             fp.SimulationState(sim_time, 
                 {main_actor.name: fp.get_aircraft_state_from_fdm(glider),

@@ -1,5 +1,5 @@
 import time
-from collections import namedtuple
+from typing import Union
 from flypywire import SimulationState
 from flypywire.unityapi.game_services import GameServices
 from flypywire.unityapi import (
@@ -84,7 +84,7 @@ class RenderContext:
                 transform.dumps(),
                 relative_to.name)
     
-    def destroy_actor(self, actor: GameObject) -> None:
+    def destroy_actor(self, actor: Union[Actor,GameObject]) -> None:
         return self.services.DestroyActor(actor.name)
     
     def destroy_all_actors(self) -> None:
@@ -93,16 +93,16 @@ class RenderContext:
     def destroy_all_markers(self) -> None:
         return self.services.DestroyAllMarkers()
 
-    def get_transform(self, actor: GameObject) -> Transform:
+    def get_transform(self, actor: Union[Actor,GameObject]) -> Transform:
         return self.services.GetTransform(actor.name)
     
-    def set_transform(self, actor: GameObject, transform: Transform) -> None:
+    def set_transform(self, actor: Union[Actor,GameObject], transform: Transform) -> None:
         return self.services.SetTransform(actor.name, transform.dumps())
     
-    def get_position(self, actor: GameObject, relative_to: GameObject = SimulationOrigin) -> Vector3:
+    def get_position(self, actor: Union[Actor,GameObject], relative_to: GameObject = SimulationOrigin) -> Vector3:
         return self.services.GetPosition(actor.name, relative_to.name)
     
-    def set_position(self, actor: GameObject, position: Vector3, relative_to: GameObject = SimulationOrigin) -> None:
+    def set_position(self, actor: Union[Actor,GameObject], position: Vector3, relative_to: GameObject = SimulationOrigin) -> None:
         return self.services.SetPosition(actor.name, position.dumps(), relative_to.name)
 
     def get_geocoordinate(self, actor: GameObject) -> GeoCoordinate:
@@ -117,7 +117,7 @@ class RenderContext:
     def set_origin(self, geocoordinate: GeoCoordinate) -> None:
         return self.set_geocoordinate(SimulationOrigin, geocoordinate)
     
-    def freeze_actor(self, actor: GameObject, lifetime: float = -1) -> None:
+    def freeze_actor(self, actor: Union[Actor,GameObject], lifetime: float = -1) -> None:
 
         if actor.name in self.actor_clone_count:
             self.actor_clone_count[actor.name] += 1
@@ -128,7 +128,7 @@ class RenderContext:
     
     def spawn_camera(self,
         label: str,
-        parent: GameObject,
+        parent: Union[Actor,GameObject],
         transform: Transform = Transform(),
         host: str = 'tcp://127.0.0.1',
         port: int = 2000,
@@ -148,7 +148,7 @@ class RenderContext:
         width: float = 0.01,
         size: float = 1,
         transform: Transform = Transform(),
-        parent: GameObject = SimulationOrigin,
+        parent: Union[Actor,GameObject] = SimulationOrigin,
         lifetime: float = -1,
         right_hand: bool = False) -> GameObject:
         

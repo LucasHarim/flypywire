@@ -41,7 +41,7 @@ if __name__ == '__main__':
     with client.RenderContext() as ctx:
         
         f16 = main_aircraft.get_actor('main-aircraft')
-        b747 = unity.GameObject('787-tank', "Airplanes/USAF747")
+        b747 = unity.GameObject('side-aircraft', "Airplanes/USAF747")
 
         ctx.set_origin(origin)
 
